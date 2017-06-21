@@ -1,1 +1,33 @@
 <p>This is the partial for view 1.</p>
+
+
+<div class="row">
+	<input type="file" onchange="angular.element(this).scope().onFile(this.files[0])">
+</div>
+
+<div class="row">
+	<div ng-if="dataUrl" class="col-md-6 img-container">
+		<img ng-if="dataUrl" ng-src="{{dataUrl}}" width="800"
+		     ng-cropper
+		     ng-cropper-proxy="ctrl.cropperProxy"
+		     ng-cropper-show="ctrl.showEvent"
+		     ng-cropper-hide="ctrl.hideEvent"
+		     ng-cropper-options="ctrl.options">
+	</div>
+
+	<div class="col-md-6">
+		<select class="row" ng-model="ctrl.selectedSize"
+			ng-options="option.value as option.description for option in ctrl.sizeOptions"
+			ng-change="ctrl.selectSize()"></select>
+		<div class="row">
+			<button class="btn btn-sm" ng-click="ctrl.preview()">Show preview</button>
+			<button class="btn btn-sm" ng-click="ctrl.scale(200)">Scale to 200px width</button>
+			<button class="btn btn-sm" ng-click="ctrl.clear()">Clear selection</button>
+			<label class="btn btn-sm" >Disabled <input type="checkbox" ng-model="ctrl.options.disabled"></label>
+		</div>
+	</div>
+</div>
+
+<div class="row preview-container">
+	<img ng-if="ctrl.preview.dataUrl" ng-src="{{ctrl.preview.dataUrl}}">
+</div>

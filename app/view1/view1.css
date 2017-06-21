@@ -1,0 +1,14 @@
+.img-container {
+  max-width: 300px;
+  max-height: 500px;
+  float: left;
+}
+
+.preview-container {
+  float: right;
+}
+
+.preview-container img {
+  max-width: 400px;
+  max-height: 500px;
+}
