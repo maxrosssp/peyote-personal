@@ -1,14 +1,12 @@
 .img-container {
-  max-width: 300px;
-  max-height: 500px;
-  float: left;
+  height: 500px;
 }
 
-.preview-container {
+/*.preview-container {
   float: right;
-}
+}*/
 
-.preview-container img {
+/*.preview-container img {
   max-width: 400px;
   max-height: 500px;
-}
+}*/

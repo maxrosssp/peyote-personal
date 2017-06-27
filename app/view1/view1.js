@@ -1,62 +1,102 @@
 'use strict';
 
-angular.module('myApp.view1', ['ngRoute', 'ngCropper', 'ui.bootstrap'])
+angular.module('app').directive('viewOne', [viewOne]);
 
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/view1', {
-    templateUrl: 'view1/view1.html',
-    controller: 'View1Ctrl',
-    controllerAs: 'ctrl'
-  });
-}])
-
-.controller('View1Ctrl', ['$scope', '$timeout', 'Cropper', function($scope, $timeout, Cropper) {
+function ViewOneCtrl($scope, $timeout, Cropper, PEYOTE_VALUES) {
   var ctrl = this;
-  var file, data;
+  var file, data, showCropper, hideCropper;
+  var cropBoxAspectRatio, imageAspectRatio, containerData;
 
-  var braceletPixelWidth = 600;
-  var pixelsPerInch = 300;
-  var pixelsPerBead = 28;
-  var sizesByInch = [
-    {inches: 6.5, description: 'Extra Small'},
-    {inches: 7, description: 'Small'},
-    {inches: 8, description: 'Medium'},
-    {inches: 9, description: 'Large'},
-    {inches: 9.5, description: 'Extra Large'}
-  ];
+  ctrl.$onInit = function() {
+    ctrl.cropper = {};
+    ctrl.cropperProxy = 'ctrl.cropper.callMethod';
+    ctrl.showEvent = 'show';
+    ctrl.hideEvent = 'hide';
 
-  $scope.onFile = function(blob) {
+    showCropper = function() { $scope.$broadcast(ctrl.showEvent); }
+    hideCropper = function() { $scope.$broadcast(ctrl.hideEvent); }
+
+    ctrl.options = {
+      dragMode: 'move',
+      cropBoxMovable: false,
+      cropBoxResizable: false,
+      doubleClickToggle: false
+    };
+
+    var ppb = PEYOTE_VALUES.pixelsPerBead;
+    ctrl.sizeOptions = PEYOTE_VALUES.sizesByInch.map(function(size) {
+      var pixelHeight = (Math.floor((PEYOTE_VALUES.pixelsPerInch * size.inches) / ppb) * ppb) + (ppb / 2)
+      return {value: pixelHeight, description: size.description + '(' + size.inches + ' inches)'}
+    });
+    ctrl.selectedSize = ctrl.sizeOptions[0].value;
+    cropBoxAspectRatio = PEYOTE_VALUES.braceletPixelWidth / ctrl.selectedSize;
+
+    $timeout(showCropper);
+  };
+
+  ctrl.onFile = function(blob) {
     Cropper.encode((file = blob)).then(function(dataUrl) {
-      $scope.dataUrl = dataUrl;
-      $timeout(showCropper);  // wait for $digest to set image's src
+      ctrl.dataUrl = dataUrl;
+      ctrl.cropper.callMethod('replace', dataUrl);
+    }).then(function() {
+      $timeout(function() {
+        ctrl.cropper.callMethod('setDragMode', 'move');
+        containerData = ctrl.cropper.callMethod('getContainerData');
+        var imageData = ctrl.cropper.callMethod('getImageData');
+
+        imageAspectRatio = imageData.aspectRatio;
+
+        ctrl.cropper.callMethod('setCanvasData', {
+          top: 0,
+          height: containerData.height
+        });
+
+        ctrl.selectSize();
+      });
     });
   };
 
-  ctrl.cropper = {};
-  ctrl.cropperProxy = 'ctrl.cropper.callMethod';
+  var setupContainer = function() {
+    if (!ctrl.cropper.callMethod) return;
 
-  ctrl.showEvent = 'show';
-  var showCropper = function() { $scope.$broadcast(ctrl.showEvent); }
+    var cropBoxResizeData = {
+      width: containerData.height * cropBoxAspectRatio,
+      height: containerData.height,
+      top: 0
+    };
+    cropBoxResizeData.left = (containerData.width - cropBoxResizeData.width) / 2;
 
-  ctrl.hideEvent = 'hide';
-  var hideCropper = function() { $scope.$broadcast(ctrl.hideEvent); }
-
-  ctrl.options = {
-    aspectRatio: 2 / 1,
-    crop: function(dataNew) {
-      data = dataNew;
+    var canvasData = ctrl.cropper.callMethod('getCanvasData');
+    var imageResizeData;
+    if (canvasData.width < cropBoxResizeData.width) {
+      imageResizeData = {
+        width: cropBoxResizeData.width,
+        height: cropBoxResizeData.width / imageAspectRatio
+      };
     }
-  };
 
-  ctrl.sizeOptions = sizesByInch.map(function(size) {
-    var pixelHeight = (Math.floor((pixelsPerInch * size.inches) / pixelsPerBead) * pixelsPerBead) + (pixelsPerBead / 2)
-    return {value: pixelHeight, description: size.description + '(' + size.inches + ' inches)'}
-  });
-  ctrl.selectedSize = ctrl.sizeOptions[0].value;
+    var cropBoxResizeDataRight = cropBoxResizeData.left + cropBoxResizeData.width;
+    var imageDataRight = canvasData.left + canvasData.width;
+    if (cropBoxResizeData.left < canvasData.left) {
+      imageResizeData = imageResizeData || {};
+      imageResizeData.left = cropBoxResizeData.left;
+    } else if (cropBoxResizeDataRight > imageDataRight) {
+      imageResizeData = imageResizeData || {};
+      imageResizeData.left = canvasData.left + (cropBoxResizeDataRight - imageDataRight);
+    }
+
+    if (imageResizeData) {
+      ctrl.cropper.callMethod('setCanvasData', imageResizeData);
+    }
+
+    ctrl.cropper.callMethod('setCropBoxData', cropBoxResizeData);
+  };
 
   ctrl.selectSize = function() {
     if (!ctrl.cropper.callMethod) return;
-    ctrl.cropper.callMethod('setAspectRatio', braceletPixelWidth / ctrl.selectedSize);
+    cropBoxAspectRatio = PEYOTE_VALUES.braceletPixelWidth / ctrl.selectedSize;
+    ctrl.cropper.callMethod('setAspectRatio', cropBoxAspectRatio);
+    setupContainer();
   };
 
   ctrl.preview = function() {
@@ -80,4 +120,20 @@ angular.module('myApp.view1', ['ngRoute', 'ngCropper', 'ui.bootstrap'])
         (ctrl.preview || (ctrl.preview = {})).dataUrl = dataUrl;
       });
   };
-}]);
+
+  ctrl.crop = function(dataNew) {
+    data = dataNew;
+  };
+}
+
+function viewOne() {
+  return {
+    restrict: 'E',
+    scope: {},
+    controller: [
+      '$scope', '$timeout', 'Cropper', 'PEYOTE_VALUES', ViewOneCtrl
+    ],
+    controllerAs: 'ctrl',
+    templateUrl: 'view1/view1.html'
+  };
+}
