@@ -4,14 +4,27 @@ angular.module('app').directive('makePayment', [makePayment]);
 
 function MakePaymentCtrl($window, STRIPE) {
   var ctrl = this;
-  var document;
+  var document, stripe;
+  var cardNumber;
+  var cardBrandToPfClass;
 
   ctrl.$onInit = function() {
-    document = angular.element($window.document)[0];
+    ctrl.zipCodeLength = 5;
+    cardBrandToPfClass = {
+      'visa': 'pf-visa',
+      'mastercard': 'pf-mastercard',
+      'amex': 'pf-american-express',
+      'discover': 'pf-discover',
+      'diners': 'pf-diners',
+      'jcb': 'pf-jcb',
+      'unknown': 'pf-credit-card',
+    };
 
-    var stripe = $window.Stripe(STRIPE.publishableKey);
+    document = angular.element($window.document)[0];
+    stripe = $window.Stripe(STRIPE.publishableKey);
+
     var elements = stripe.elements();
-    var cardNumber = elements.create('cardNumber', {
+    cardNumber = elements.create('cardNumber', {
       classes: {base: 'form-control'}
     });
     var cardExpiry = elements.create('cardExpiry', {
@@ -20,23 +33,39 @@ function MakePaymentCtrl($window, STRIPE) {
     var cardCvc = elements.create('cardCvc', {
       classes: {base: 'form-control'}
     });
-
     cardNumber.mount('#card-number');
     cardExpiry.mount('#card-expiry');
     cardCvc.mount('#card-cvc');
 
     cardNumber.on('change', function(event) {
+      if (event.brand) {
+        setBrandIcon(event.brand);
+      }
+
       setOutcome(event);
     });
+  };
 
-    document.querySelector('form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      var form = document.querySelector('form');
-      var extraDetails = {
-        name: form.querySelector('input[name=cardholder-name]').value,
-      };
-      stripe.createToken(card, extraDetails).then(setOutcome);
-    });
+  ctrl.createToken = function() {
+    var form = document.querySelector('form');
+    var extraDetails = {
+      name: ctrl.cardholderName,
+      address_zip: ctrl.zipCode
+    };
+    stripe.createToken(cardNumber, extraDetails).then(setOutcome);
+  };
+
+  var setBrandIcon = function(brand) {
+    var brandIconElement = document.getElementById('brand-icon');
+    var pfClass = 'pf-credit-card';
+    if (brand in cardBrandToPfClass) {
+      pfClass = cardBrandToPfClass[brand];
+    }
+    for (var i = brandIconElement.classList.length - 1; i >= 0; i--) {
+      brandIconElement.classList.remove(brandIconElement.classList[i]);
+    }
+    brandIconElement.classList.add('pf');
+    brandIconElement.classList.add(pfClass);
   };
 
   var setOutcome = function(result) {
@@ -46,8 +75,6 @@ function MakePaymentCtrl($window, STRIPE) {
     errorElement.classList.remove('visible');
 
     if (result.token) {
-      // Use the token to create a charge or a customer
-      // https://stripe.com/docs/charges
       successElement.querySelector('.token').textContent = result.token.id;
       successElement.classList.add('visible');
     } else if (result.error) {
@@ -57,7 +84,7 @@ function MakePaymentCtrl($window, STRIPE) {
   };
 
   ctrl.checkout = function() {
-    
+
   };
 }
 

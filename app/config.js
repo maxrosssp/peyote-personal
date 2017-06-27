@@ -1,6 +1,6 @@
-angular.module('app').config(['$locationProvider', '$routeProvider', 'stripeProvider', 'STRIPE', Config]);
+angular.module('app').config(['$locationProvider', '$routeProvider', 'STRIPE', Config]);
 
-function Config($locationProvider, $routeProvider, stripeProvider, STRIPE) {
+function Config($locationProvider, $routeProvider, STRIPE) {
   $locationProvider.hashPrefix('!');
   $locationProvider.html5Mode({
     enabled: false,
@@ -17,5 +17,5 @@ function Config($locationProvider, $routeProvider, stripeProvider, STRIPE) {
 
   $routeProvider.otherwise({redirectTo: '/viewOne'});
 
-  stripeProvider.setPublishableKey(STRIPE.publishableKey);
+  // $window.Stripe.setPublishableKey(STRIPE.publishableKey);
 }

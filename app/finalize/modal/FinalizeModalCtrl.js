@@ -64,7 +64,7 @@ function FinalizeModalCtrl($uibModalInstance, $scope, $timeout, Cropper, PEYOTE_
 
         ctrl.selectSize();
 
-        ctrl.totalPages = 2;
+        ctrl.currentPage = 'cropImage';
       });
     });
   };
