@@ -1,4 +1,6 @@
-angular.module('app').constant('PEYOTE_VALUES', {
+angular.module('app')
+
+.constant('PEYOTE_VALUES', {
   braceletPixelWidth: 600,
   pixelsPerInch: 300,
   pixelsPerBead: 28,
@@ -9,4 +11,8 @@ angular.module('app').constant('PEYOTE_VALUES', {
     {inches: 9, description: 'Large'},
     {inches: 9.5, description: 'Extra Large'}
   ]
+})
+
+.constant('STRIPE', {
+  publishableKey: 'pk_test_8lpNNwFVokUif3qxk2N7fPd6'
 });

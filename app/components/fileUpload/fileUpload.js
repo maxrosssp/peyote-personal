@@ -15,11 +15,12 @@ function fileUpload() {
     restrict: 'E',
     scope: {},
     bindToController: {
-      onUpload: '='
+      onUpload: '=',
+      label: '<'
     },
     controller: [
       '$scope', FileUploadCtrl
     ],
-    template: '<input type="file" onchange="angular.element(this).scope().onUpload(this.files[0])">'
+    templateUrl: 'components/fileUpload/fileUpload.html'
   };
 }

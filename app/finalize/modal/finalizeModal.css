@@ -1,0 +1,15 @@
+.finalize-modal .img-container {
+  height: 374px;
+  width: 100%;
+}
+
+.finalize-modal .cropper-container {
+  width: 100%;
+}
+
+.finalize-modal .upload-image input[type=file] {
+  height: 350px;
+  background: white url("../../images/choose_file.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}

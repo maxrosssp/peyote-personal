@@ -1,30 +1,71 @@
-<p>This is the partial for view 1.</p>
+<div class="view-one container-fluid">
+	<div class="row">
+		<div class="col-md-3">
+			<form>
+				<div class="row">
+		            <div class="col-md-6 form-group">
+		            	<label for="size">Bracelet Size</label>
+				    	<select id="size" 
+				    			class="form-control"
+				    			ng-model="ctrl.selectedSize"
+								ng-options="option.value as option.description for option in ctrl.sizeOptions"
+								ng-change="ctrl.selectSize()">
+						</select>
+				 	</div>
+				 	<div class="col-md-6 form-group">
+				    	<label for="colorCount">Number of Colors</label>
+				    	<select id="colorCount" 
+				    			class="form-control"
+				    			ng-model="ctrl.colorCount"
+								ng-options="num for num in [] | range:12:25">
+						</select>
+				  	</div>
+				</div>
+				<file-upload label="'Upload Image'" on-upload="ctrl.onFile"></file-upload>
+				<div ng-if="ctrl.editingEnabled">
+					<label for="editButtons">Edit Image</label>
+					<fieldset id="editButtons" class="well">
+					  	<div class="row">
+					  		<div class="col-md-6 form-group">
+						    	<label for="rotateButtons">Rotate</label>
+						    	<div id="rotateButtons" class="btn-group btn-group-justified col-md-12" role="group">
+								  	<a type="button" class="btn btn-default" ng-click="ctrl.rotate(-90)">Left</a>
+								  	<a type="button" class="btn btn-default" ng-click="ctrl.rotate(90)">Right</a>
+								</div>
+							</div>
+							<div class="col-md-6 form-group">
+						    	<label for="zoomButtons">Zoom</label>
+						    	<div id="zoomButtons" class="btn-group btn-group-justified col-md-12" role="group">
+								  	<a type="button" class="btn btn-default" ng-click="ctrl.zoom(-0.1)">
+								  		<span class="glyphicon glyphicon-zoom-out"></span>
+								  	</a>
+								  	<a type="button" class="btn btn-default" ng-click="ctrl.zoom(0.1)">
+								  		<span class="glyphicon glyphicon-zoom-in"></span>
+								  	</a>
+								</div>
+							</div>
+							<!-- <div class="col-md-6 form-group">
+						    	<label for="zoomSlider">Zoom</label>
+						    	<slider id="zoomSlider"  slider-id="zoomSlider" ng-model="ctrl.zoom"  min="0" max="2" step=".01" value="0"
+						    			selection="none" ng-disabled="!ctrl.editingEnabled" on-slide="ctrl.setZoom(value)"></slider>
+							</div> -->
+					  	</div>
+					</fieldset>
+					<button type="submit" class="btn btn-default" ng-click="ctrl.finalCrop()">Submit</button>
+				</div>
+			</form>
+		</div>
 
-<!-- <input type="file" onchange="angular.element(this).scope().onFile(this.files[0])"> -->
-<!-- <input type="file" ng-model="ctrl.files" ng-change="ctrl.onFile(this.files[0])"> -->
-<file-upload on-upload="ctrl.onFile"></file-upload>
+		<div class="col-md-3 img-container">
+			<img ng-cropper
+			     ng-cropper-proxy="ctrl.cropperProxy"
+			     ng-cropper-show="ctrl.showEvent"
+			     ng-cropper-hide="ctrl.hideEvent"
+			     ng-cropper-options="ctrl.options">
+		</div>
 
-<div class="row">
-	<div class="col-md-3 img-container">
-		<img ng-cropper
-		     ng-cropper-proxy="ctrl.cropperProxy"
-		     ng-cropper-show="ctrl.showEvent"
-		     ng-cropper-hide="ctrl.hideEvent"
-		     ng-cropper-options="ctrl.options">
-	</div>
-
-	<div class="col-md-6">
-		<select class="row" ng-model="ctrl.selectedSize"
-			ng-options="option.value as option.description for option in ctrl.sizeOptions"
-			ng-change="ctrl.selectSize()"></select>
-		<div class="row">
-			<button class="btn btn-sm" ng-click="ctrl.preview()">Show preview</button>
-			<button class="btn btn-sm" ng-click="ctrl.scale(200)">Scale to 200px width</button>
-			<button class="btn btn-sm" ng-click="ctrl.clear()">Clear selection</button>
-			<label class="btn btn-sm" >Disabled <input type="checkbox" ng-model="ctrl.options.disabled"></label>
+		<div class="col-md-3">
+			<img ng-if="ctrl.finalizedCrop" ng-src="{{ctrl.finalizedCrop}}">
 		</div>
 	</div>
 </div>
-
-
-<img ng-if="ctrl.preview.dataUrl" ng-src="{{ctrl.preview.dataUrl}}">

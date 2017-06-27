@@ -3,7 +3,9 @@
 // Declare app level module which depends on views, and components
 angular.module('app', [
   'ngRoute',
-  'ngCropper',
   'ui.bootstrap',
+  'ui.bootstrap-slider',
+  'ngCropper',
+  'angular-stripe',
   'app.version'
 ]);

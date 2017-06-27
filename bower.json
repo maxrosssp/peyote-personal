@@ -13,6 +13,8 @@
     "html5-boilerplate": "^5.3.0",
     "ng-cropper": "^0.4.1",
     "jquery": "^3.2.1",
-    "angular-bootstrap": "^2.5.0"
+    "angular-bootstrap": "^2.5.0",
+    "angular-bootstrap-slider": "^0.1.28",
+    "angular-stripe": "^5.0.0"
   }
 }

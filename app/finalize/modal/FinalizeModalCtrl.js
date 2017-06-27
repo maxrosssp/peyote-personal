@@ -1,15 +1,17 @@
 'use strict';
 
-angular.module('app').directive('viewOne', [viewOne]);
+angular.module('app').controller('FinalizeModalCtrl', [
+  '$uibModalInstance', '$scope', '$timeout', 'Cropper', 'PEYOTE_VALUES', FinalizeModalCtrl
+]);
 
-function ViewOneCtrl($scope, $timeout, Cropper, PEYOTE_VALUES) {
+function FinalizeModalCtrl($uibModalInstance, $scope, $timeout, Cropper, PEYOTE_VALUES) {
   var ctrl = this;
   var file, data, showCropper, hideCropper;
-  var cropBoxAspectRatio, containerData;
+  var cropBoxAspectRatio, imageAspectRatio, containerData;
   var zoomRatio;
 
   ctrl.$onInit = function() {
-    ctrl.editingEnabled = false;
+    ctrl.currentPage = 'uploadImage';
     zoomRatio = 0;
 
     ctrl.cropper = {};
@@ -25,6 +27,7 @@ function ViewOneCtrl($scope, $timeout, Cropper, PEYOTE_VALUES) {
       cropBoxMovable: false,
       cropBoxResizable: false,
       doubleClickToggle: false,
+      minContainerWidth: 420,
       crop: function(dataNew) {
         data = dataNew;
       }
@@ -43,13 +46,16 @@ function ViewOneCtrl($scope, $timeout, Cropper, PEYOTE_VALUES) {
 
   ctrl.onFile = function(blob) {
     Cropper.encode((file = blob)).then(function(dataUrl) {
-      ctrl.editingEnabled = true;
+      ctrl.imageUploaded = true;
       ctrl.dataUrl = dataUrl;
       ctrl.cropper.callMethod('replace', dataUrl);
     }).then(function() {
       $timeout(function() {
         ctrl.cropper.callMethod('setDragMode', 'move');
         containerData = ctrl.cropper.callMethod('getContainerData');
+        var imageData = ctrl.cropper.callMethod('getImageData');
+
+        imageAspectRatio = imageData.aspectRatio;
 
         ctrl.cropper.callMethod('setCanvasData', {
           top: 0,
@@ -57,6 +63,8 @@ function ViewOneCtrl($scope, $timeout, Cropper, PEYOTE_VALUES) {
         });
 
         ctrl.selectSize();
+
+        ctrl.totalPages = 2;
       });
     });
   };
@@ -72,13 +80,11 @@ function ViewOneCtrl($scope, $timeout, Cropper, PEYOTE_VALUES) {
     cropBoxResizeData.left = (containerData.width - cropBoxResizeData.width) / 2;
 
     var canvasData = ctrl.cropper.callMethod('getCanvasData');
-    var imageData = ctrl.cropper.callMethod('getImageData');
-
     var imageResizeData;
     if (canvasData.width < cropBoxResizeData.width) {
       imageResizeData = {
         width: cropBoxResizeData.width,
-        height: cropBoxResizeData.width / imageData.aspectRatio
+        height: cropBoxResizeData.width / imageAspectRatio
       };
     }
 
@@ -116,21 +122,39 @@ function ViewOneCtrl($scope, $timeout, Cropper, PEYOTE_VALUES) {
     ctrl.cropper.callMethod('zoom', delta);
   };
 
-  ctrl.finalCrop = function() {
+  ctrl.preview = function() {
     if (!file || !data) return;
-    var dataUrl = ctrl.cropper.callMethod('getCroppedCanvas', {height: containerData.height}).toDataURL();
-    ctrl.finalizedCrop = dataUrl;
+    Cropper.crop(file, data).then(Cropper.encode).then(function(dataUrl) {
+      (ctrl.preview || (ctrl.preview = {})).dataUrl = dataUrl;
+    });
   };
-}
 
-function viewOne() {
-  return {
-    restrict: 'E',
-    scope: {},
-    controller: [
-      '$scope', '$timeout', 'Cropper', 'PEYOTE_VALUES', ViewOneCtrl
-    ],
-    controllerAs: 'ctrl',
-    templateUrl: 'view1/view1.html'
+  ctrl.clear = function(degrees) {
+    if (!ctrl.cropper.callMethod) return;
+    ctrl.cropper.callMethod('clear');
+  };
+
+  ctrl.scale = function(width) {
+    Cropper.crop(file, data)
+      .then(function(blob) {
+        return Cropper.scale(blob, {width: width});
+      })
+      .then(Cropper.encode).then(function(dataUrl) {
+        (ctrl.preview || (ctrl.preview = {})).dataUrl = dataUrl;
+      });
+  };
+
+  ctrl.crop = function(dataNew) {
+    data = dataNew;
+  };
+
+  ctrl.close = function() {
+    var croppedDataUrl;
+
+    Cropper.crop(file, data).then(Cropper.encode).then(function(dataUrl) {
+      croppedDataUrl = dataUrl;
+    });
+
+    $uibModalInstance.close(ctrl.selectedSize, ctrl.colorCount, ctrl.croppedData.url);
   };
 }
