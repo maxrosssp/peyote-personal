@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 class="modal-title" id="modal-title">Checkout</h3>
+    <h3 class="modal-title" id="modal-title">{{ctrl.modalPages[ctrl.currentPage].title}}</h3>
 </div>
 
 <div ng-show="ctrl.currentPage === 'uploadImage'">
@@ -12,7 +12,7 @@
 	</div>
 
 	<div class="modal-footer">
-	    <button class="btn btn-primary" type="button" ng-click="ctrl.currentPage = 'cropImage'" ng-disabled="!ctrl.imageUploaded">Next</button>
+	    <button class="btn btn-primary" type="button" ng-click="ctrl.currentPage = 'cropImage'" ng-disabled="!ctrl.canContinue()">Next</button>
 	</div>
 </div>
 
@@ -20,81 +20,20 @@
 	<div class="modal-body">
 		<div class="row crop-image">
 			<div class="col-md-12">
-				<div class="row">
-				  	<div class="col-md-6">
-			  			<div class="img-container">
-					  		<img ng-cropper
-							     ng-cropper-proxy="ctrl.cropperProxy"
-							     ng-cropper-show="ctrl.showEvent"
-							     ng-cropper-hide="ctrl.hideEvent"
-							     ng-cropper-options="ctrl.options">
-						</div>
-					</div>
-
-					<div class="col-md-6">
-						<form class="col-md-12 well">
-							<div class="col-md-12 form-group">
-				            	<label for="size">Bracelet Size</label>
-
-						    	<select id="size" 
-						    			class="form-control"
-						    			ng-model="ctrl.selectedSize"
-										ng-options="option.value as option.description for option in ctrl.sizeOptions"
-										ng-change="ctrl.selectSize()">
-								</select>
-						 	</div>
-
-						 	<div class="col-md-6 form-group">
-						    	<label for="rotateButtons">Rotate</label>
-
-						    	<div id="rotateButtons" class="btn-group btn-group-justified col-md-12" role="group">
-								  	<a type="button" class="btn btn-default" ng-click="ctrl.rotate(-90)">Left</a>
-
-								  	<a type="button" class="btn btn-default" ng-click="ctrl.rotate(90)">Right</a>
-								</div>
-							</div>
-
-							<div class="col-md-6 form-group">
-						    	<label for="zoomButtons">Zoom</label>
-
-						    	<div id="zoomButtons" class="btn-group btn-group-justified col-md-12" role="group">
-								  	<a type="button" class="btn btn-default" ng-click="ctrl.zoom(-0.1)">
-								  		<span class="glyphicon glyphicon-zoom-out"></span>
-								  	</a>
-
-								  	<a type="button" class="btn btn-default" ng-click="ctrl.zoom(0.1)">
-								  		<span class="glyphicon glyphicon-zoom-in"></span>
-								  	</a>
-								</div>
-						 	</div>
-						</form>
-					</div>
-
-					<div class="col-md-6">
-						<div class="form-group">
-					    	<label for="colorCount">Number of Colors</label>
-
-					    	<select id="colorCount" 
-					    			class="form-control"
-					    			ng-model="ctrl.colorCount"
-									ng-options="num for num in [] | range:12:25">
-							</select>
-					  	</div>
-					</div>
-				</div>
+				<peyote-crop blob="ctrl.blob" bead-height="ctrl.selectedHeight" bead-width="ctrl.selectedWidth" cropped-image="ctrl.cropData"></peyote-crop>
 			</div>
 		</div>
 	</div>
 
 	<div class="modal-footer">
 		<button class="btn btn-primary" type="button" ng-click="ctrl.currentPage = 'uploadImage'">Back</button>
-	    <button class="btn btn-primary" type="button" ng-click="ctrl.currentPage = 'addPayment'" ng-disabled="!ctrl.colorCount">Next</button>
+	    <button class="btn btn-primary" type="button" ng-click="ctrl.cropAndContinue()">Crop and Continue</button>
 	</div>
 </div>
 
-<div ng-show="ctrl.currentPage === 'addPayment'">
+<div ng-if="ctrl.currentPage === 'addPayment'">
 	<div class="modal-body">
-		<div class="row upload-image">
+		<div class="row add-payment">
 		  	<div class="col-md-12">
 		  		<make-payment></make-payment>
 		  	</div>

@@ -1,0 +1,101 @@
+<div class="row">
+  	<div class="col-md-8">
+  		<div class="col-md-12">
+			<div class="img-container">
+		  		<img ng-cropper
+				     ng-cropper-proxy="ctrl.cropperProxy"
+				     ng-cropper-show="ctrl.showEvent"
+				     ng-cropper-hide="ctrl.hideEvent"
+				     ng-cropper-options="ctrl.options">
+			</div>
+		</div>
+
+		<div class="col-md-12">
+			<form class="col-md-12 well" ng-if="ctrl.showEditButtons">
+				<fieldset class="col-md-9">
+					<h5>Bracelet Size</h5>
+
+					<div class="row">
+						<div class="form-group col-md-5">
+						    <label for="height">Height:</label>
+						    <select id="height" 
+					    			class="form-control"
+					    			ng-model="ctrl.selectedHeight"
+									ng-options="option.beads as option.description for option in ctrl.heightOptions"
+									ng-change="ctrl.updatePreview()">
+							</select>
+						</div>
+						<div class="form-group col-md-7">
+						    <label for="width">Width:</label>
+						    <select id="width" 
+					    			class="form-control"
+					    			ng-model="ctrl.selectedWidth"
+									ng-options="option.beads as option.description for option in ctrl.widthOptions"
+									ng-change="ctrl.updatePreview()">
+							</select>
+						</div>
+					</div>
+				</fieldset>
+
+				<fieldset class="col-md-12">
+					<h5>Edit</h5>
+
+				 	<div class="col-md-8 form-group">
+				    	<label for="rotateSlider">Rotate</label>
+				    	<slider id="rotateSlider"  
+				    			slider-id="rotateSlider" 
+				    			ng-model="ctrl.rotation"
+				    			ticks="[-180, -90, 0, 90, 180]"
+				    			ticks-labels='["-180&deg;", "-90&deg;", "0&deg;", "90&deg;", "180&deg;"]'
+				    			ticks-snap-bounds="5"
+				    			value="0"
+				    			selection="none"
+				    			on-slide="ctrl.setRotation(value)"
+				    			on-stop-slide="ctrl.updatePreview()">
+				    	</slider>
+					</div>
+
+					<div class="col-md-4 form-group">
+				    	<label for="zoomButtons">Zoom</label>
+
+				    	<div id="zoomButtons" class="btn-group btn-group-justified col-md-12" role="group">
+						  	<a type="button" class="btn btn-default" ng-click="ctrl.zoom(-0.1)">
+						  		<span class="glyphicon glyphicon-zoom-out"></span>
+						  	</a>
+
+						  	<a type="button" class="btn btn-default" ng-click="ctrl.zoom(0.1)">
+						  		<span class="glyphicon glyphicon-zoom-in"></span>
+						  	</a>
+						</div>
+				 	</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+
+	<div class="col-md-4">
+		<div ng-if="ctrl.previewUrl" class="preview-container row">
+			<div class="col-md-6">
+				<img ng-src="{{ctrl.previewUrl}}" 
+				     color-thief 
+				     color-thief-dominant="ctrl.dominantColor">
+			</div>
+
+			<canvas id="pixel-preview" width="{{ctrl.previewWidth}}" height="{{ctrl.previewHeight}}" class="col-md-6" ng-if="ctrl.previewUrl"
+					pixelizer 
+					pixelizer-url="ctrl.previewUrl" 
+					pixelizer-rows="ctrl.selectedHeight"
+					pixelizer-columns="ctrl.selectedWidth"
+					pixelizer-height="ctrl.previewHeight"
+					pixelizer-width="ctrl.previewWidth"
+					pixelizer-palette="ctrl.palette">
+				<!-- <img pixelizer
+					 pixelizer-url="ctrl.previewUrl"
+					 pixelizer-height="ctrl.previewHeight"
+					 pixelizer-width="ctrl.previewWidth"
+				     pixelizer-rows="ctrl.selectedHeight"
+				     pixelizer-columns="ctrl.selectedWidth"> -->
+			</canvas>
+		</div>
+	</div>
+</div>

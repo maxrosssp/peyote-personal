@@ -16,6 +16,9 @@
     "angular-bootstrap": "^2.5.0",
     "angular-bootstrap-slider": "^0.1.28",
     "angular-stripe": "^5.0.0",
-    "paymentfont": "^1.2.4"
+    "paymentfont": "^1.2.4",
+    "ngColorThief": "angular-colorthief#^0.2.0",
+    "paper": "^0.11.4",
+    "caman": "^4.1.2"
   }
 }

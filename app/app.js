@@ -6,6 +6,7 @@ angular.module('app', [
   'ui.bootstrap',
   'ui.bootstrap-slider',
   'ngCropper',
+  'ngColorThief',
   'angular-stripe',
   'app.version'
 ]);

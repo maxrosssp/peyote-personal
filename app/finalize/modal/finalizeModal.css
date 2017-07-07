@@ -12,4 +12,18 @@
   background: white url("../../images/choose_file.png");
   background-size: contain;
   background-repeat: no-repeat;
+  background-position: 50%;
 }
+
+.finalize-modal .preview-container {
+    text-align: center;
+}
+
+.finalize-modal .preview-container img,
+.finalize-modal .preview-container canvas {
+    height: 650px;
+}
+
+/*.finalize-modal .modal-lg {
+    width: 90%;
+}*/
