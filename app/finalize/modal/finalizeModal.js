@@ -2,7 +2,7 @@
 
 angular.module('app').directive('finalizeModal', [finalizeModal]);
 
-function FinalizeModalCtrl($scope, $timeout, $colorThief) {
+function FinalizeModalCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
   var ctrl = this;
 
   ctrl.$onInit = function() {
@@ -32,6 +32,8 @@ function FinalizeModalCtrl($scope, $timeout, $colorThief) {
     };
 
     ctrl.currentPage = ctrl.modalPages.uploadImage;
+
+    ctrl.orderReviewPixelizerId = 'review-order-preview';
   };
 
   ctrl.goToNextPage = function() {
@@ -59,21 +61,34 @@ function FinalizeModalCtrl($scope, $timeout, $colorThief) {
   };
 
   ctrl.cropAndContinue = function() {
-    var croppedData = ctrl.cropData();
+    var cropBoxAspectRatio = (ctrl.selectedWidth * PEYOTE_VALUES.beadWidth) / (ctrl.selectedHeight * PEYOTE_VALUES.beadHeight);
+    ctrl.previewWidth = parseInt(650 * cropBoxAspectRatio);
 
-    ctrl.previewUrl = croppedData.toDataURL()
-    ctrl.previewData = {
-      height: 650,
-      width: 150,
-      rows: ctrl.selectedHeight,
-      columns: ctrl.selectedWidth,
-    };
+    ctrl.cropData()
+    .then(function(croppedData) {
+      var previewUrl = croppedData.toDataURL();
+      var previewData = {rows: ctrl.selectedHeight, columns: ctrl.selectedWidth};
+      var palette = $colorThief.getPalette(croppedData, ctrl.colorCount || 12);
 
-    ctrl.palette = $colorThief.getPalette(croppedData, ctrl.colorCount || 12);
+      $scope.$broadcast('pixelize-' + ctrl.orderReviewPixelizerId, previewUrl, previewData, palette);
 
-    ctrl.currentPage = 'reviewOrder';
+      return previewUrl;
+    })
+    .then(function(previewUrl) {
+      ctrl.goToNextPage();
+    });
 
-    $scope.$broadcast('pixelize-review-order-preview', croppedData.toDataURL(), ctrl.previewData, ctrl.palette);
+    // ctrl.previewUrl = croppedData.toDataURL()
+    // ctrl.previewData = {
+    //   rows: ctrl.selectedHeight,
+    //   columns: ctrl.selectedWidth,
+    // };
+
+    // ctrl.palette = $colorThief.getPalette(croppedData, ctrl.colorCount || 12);
+
+    // ctrl.currentPage = 'reviewOrder';
+
+    // $scope.$broadcast('pixelize-review-order-preview', croppedData.toDataURL(), ctrl.previewData, ctrl.palette);
   };
 
   ctrl.close = function() {
@@ -95,7 +110,7 @@ function finalizeModal() {
       modalInstance: '<'
     },
     controller: [
-      '$scope', '$timeout', '$colorThief', FinalizeModalCtrl
+      '$scope', '$timeout', '$colorThief', 'PEYOTE_VALUES', FinalizeModalCtrl
     ],
     controllerAs: 'ctrl',
     link: function(scope, element, attrs, ctrl) {

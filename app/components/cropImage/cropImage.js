@@ -2,7 +2,7 @@
 
 angular.module('app').directive('peyoteCrop', [cropImage]);
 
-function CropImageCtrl($scope, $timeout, Cropper, PEYOTE_VALUES, CropImageService, $colorThief) {
+function CropImageCtrl($scope, $q, $timeout, Cropper, PEYOTE_VALUES, CropImageService, $colorThief) {
   var ctrl = this;
   var file, data, showCropper, hideCropper;
   var cropBoxAspectRatio, imageAspectRatio, containerData;
@@ -145,59 +145,68 @@ function CropImageCtrl($scope, $timeout, Cropper, PEYOTE_VALUES, CropImageServic
   };
 
   var dragend = function() {
-    $timeout(function() {
-      ctrl.updatePreview();
-
-
-      $scope.$broadcast('pixelize-pixel-preview', ctrl.previewUrl, ctrl.previewData, ctrl.palette);
+    ctrl.updatePreview()
+    .then(function(previewUrl) {
+      ctrl.previewUrl = previewUrl;
     });
   };
 
   ctrl.updatePreview = function() {
     ctrl.updateSize();
 
-    var previewData = cropData();
-    ctrl.palette = $colorThief.getPalette(previewData, 3);
+    return cropData()
+    .then(function(previewBlob) {
+      var previewUrl = previewBlob.toDataURL();
+      var previewData = {rows: ctrl.selectedHeight, columns: ctrl.selectedWidth};
+      var palette = $colorThief.getPalette(previewBlob, 3);
 
-    ctrl.previewData = {
-      height: 650,
-      width: 150,
-      rows: ctrl.selectedHeight,
-      columns: ctrl.selectedWidth
-    };
+      ctrl.previewUrl = previewUrl;
 
-    ctrl.previewUrl = previewData.toDataURL();
+      $scope.$broadcast('pixelize-pixel-preview', previewUrl, previewData, palette);
+
+      return previewUrl;
+    });
   };
 
   var crop = function(dataNew) {
     data = dataNew;
   };
 
-  var cropData = function() {
-    if (!file || !data) return;
+  var cropData = function(height, width) {
+    if (!file || !data) return $q.reject();
 
-    var imgData = ctrl.cropper.callMethod('getCroppedCanvas');
+    return getCroppedCanvas()
+    .then(function(imgData) {
+      var palette = $colorThief.getPalette(imgData, 3);
+      var fillColor = CropImageService.bestColorOption(palette, ctrl.dominantColor);
 
-    var palette = $colorThief.getPalette(imgData, 3);
-    var fillColor = CropImageService.bestColorOption(palette, ctrl.dominantColor);
+      return getCroppedCanvas({
+        height: height,
+        width: width,
+        fillColor: CropImageService.rgbToHex(fillColor)
+      });
+    });
+  };
 
-    return ctrl.cropper.callMethod('getCroppedCanvas', {fillColor: CropImageService.rgbToHex(fillColor)});
+  var getCroppedCanvas = function(options) {
+    return $q.resolve(ctrl.cropper.callMethod('getCroppedCanvas', options));
   };
 }
 
 function cropImage() {
   return {
     restrict: 'E',
-    require: '^^FinalizeModalCtrl',
+    require: '^^finalizeModal',
     scope: {},
     bindToController: {
       blob: '<',
       selectedHeight: '=beadHeight',
       selectedWidth: '=beadWidth',
+      colorCount: '=',
       cropData: '='
     },
     controller: [
-      '$scope', '$timeout', 'Cropper', 'PEYOTE_VALUES', 'CropImageService', '$colorThief', CropImageCtrl
+      '$scope', '$q', '$timeout', 'Cropper', 'PEYOTE_VALUES', 'CropImageService', '$colorThief', CropImageCtrl
     ],
     controllerAs: 'ctrl',
     templateUrl: 'components/cropImage/cropImage.html'

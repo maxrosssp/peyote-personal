@@ -2,20 +2,22 @@
 
 angular.module('app').directive('orderReview', [orderReview]);
 
-function OrderReviewCtrl($scope, $timeout, $colorThief) {
+function OrderReviewCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
   var ctrl = this;
 
   ctrl.$onInit = function() {
-    // var previewData = {
-    //   url: ctrl.imageData.toDataURL(),
-    //   height: 650,
-    //   width: 150,
-    //   rows: ctrl.beadHeight,
-    //   columns: ctrl.beadWidth
-    // };
-    // $timeout(function() {
-    //   ctrl.palette = $colorThief.getPalette(ctrl.imageData, ctrl.colorCount || 12);
-    // });
+    var selectedHeight = PEYOTE_VALUES.heightOptions.find(function(option) {
+      return option.beads === ctrl.beadHeight;
+    });
+
+    var selectedWidth = PEYOTE_VALUES.widthOptions.find(function(option) {
+      return option.beads === ctrl.beadWidth;
+    });
+
+    var sizeInches = selectedHeight.inches + '" x ' + selectedWidth.inches + '"';
+    var sizeBeads = parseInt(selectedHeight.beads) + ' x ' + selectedWidth.beads + ' beads';
+
+    ctrl.templateSize = sizeInches + ' (' + sizeBeads + ')';
   };
 
   ctrl.$onChanges = function(changesObj) {
@@ -45,15 +47,18 @@ function OrderReviewCtrl($scope, $timeout, $colorThief) {
 function orderReview() {
   return {
     restrict: 'E',
-    require: '^^FinalizeModalCtrl',
+    require: '^^finalizeModal',
     scope: {},
     bindToController: {
-      pixelizeId: '@',
+      pixelizeId: '=',
+      beadHeight: '=',
+      beadWidth: '=',
       endClasps: '='
     },
     controller: [
-      '$scope', '$timeout', '$colorThief', OrderReviewCtrl
+      '$scope', '$timeout', '$colorThief', 'PEYOTE_VALUES', OrderReviewCtrl
     ],
+    controllerAs: 'ctrl',
     templateUrl: 'components/orderReview/orderReview.html'
   };
 }

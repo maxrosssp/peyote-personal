@@ -2,30 +2,17 @@
 
 angular.module('app').directive('pixelizer', ['CropImageService', pixelizer]);
 
-function PixelizerCtrl(CropImageService) {
-  var ctrl = this;
-
-  ctrl.$onInit = function() {
-  
-  };
-
-  ctrl.$onChanges = function(changesObject) {
-
-  };
-}
-
-function pixelizer() {
+function pixelizer(CropImageService) {
   return {
     restrict: 'E',
     require: '^^finalizeModal',
     scope: {
-      pixelizeId: '<'
+      pixelizeId: '@',
+      height: '<',
+      width: '@'
     },
     link: function(scope, element, attrs, ctrl) {
       scope.$on('pixelize-' + scope.pixelizeId, function(event, url, data, palette) {
-        attrs.height = data.height;
-        attrs.width = data.width;
-
         paper.setup(scope.pixelizeId);
 
         var raster = new paper.Raster(url);
@@ -35,8 +22,8 @@ function pixelizer() {
 
           var columns = parseInt(data.columns);
           var rows = parseInt(data.rows);
-          var pixelWidth = data.width / columns;
-          var pixelHeight = data.height / rows;
+          var pixelWidth = scope.width / columns;
+          var pixelHeight = scope.height / rows;
 
           raster.size = new paper.Size(columns, rows);
 
@@ -46,7 +33,7 @@ function pixelizer() {
 
               var path = new paper.Path.Rectangle(new paper.Point(x * pixelWidth, y * pixelHeight), new paper.Size(pixelWidth, pixelHeight));
 
-              var bestMatch = CropImageService.bestColorOption(scope.palette, [pxColor.red * 256, pxColor.green * 256, pxColor.blue * 256]);
+              var bestMatch = CropImageService.bestColorOption(palette, [pxColor.red * 256, pxColor.green * 256, pxColor.blue * 256]);
 
               path.fillColor = new paper.Color(bestMatch[0] / 256, bestMatch[1] / 256, bestMatch[2] / 256);
             }
@@ -56,6 +43,8 @@ function pixelizer() {
         paper.project.activeLayer.position = paper.view.center;
       });
     },
-    template: '<canvas id="{{pixelizeId}}"></canvas>'
+    template: '<canvas id="{{pixelizeId}}" height="{{height}}" width="{{width}}" ' +
+                'class="pixelizer ' +
+                '"></canvas>'
   };
 }

@@ -20,24 +20,38 @@
 	<div class="modal-body">
 		<div class="row crop-image">
 			<div class="col-md-12">
-				<peyote-crop blob="ctrl.blob" bead-height="ctrl.selectedHeight" bead-width="ctrl.selectedWidth" crop-data="ctrl.cropData"></peyote-crop>
+				<peyote-crop blob="ctrl.blob"
+							 bead-height="ctrl.selectedHeight"
+							 bead-width="ctrl.selectedWidth"
+							 crop-data="ctrl.cropData"
+							 color-count="ctrl.colorCount">
+				</peyote-crop>
 			</div>
 		</div>
 	</div>
 
 	<div class="modal-footer">
 		<button class="btn btn-primary" type="button" ng-click="ctrl.goToPreviousPage()">Back</button>
-	    <button class="btn btn-primary" type="button" ng-click="ctrl.goToNextPage()">Crop and Continue</button>
+	    <button class="btn btn-primary" type="button" ng-click="ctrl.cropAndContinue()" ng-disabled="!ctrl.colorCount">
+	    	{{!ctrl.colorCount ? 'Select Bead Color Count' : 'Crop and Continue'}}
+	    </button>
 	</div>
 </div>
 
-<div ng-if="ctrl.currentPage.id === 'reviewOrder'">
+<div ng-show="ctrl.currentPage.id === 'reviewOrder'">
 	<div class="modal-body">
 		<div class="row review-order">
-			<div class="col-md-12">
-				<order-review pixelize-id="'review-order-preview'"
+			<div class="col-md-offset-1 col-md-8">
+				<order-review color-count="ctrl.colorCount"
+							  bead-height="ctrl.selectedHeight"
+							  bead-width="ctrl.selectedWidth"
 							  end-clasps="ctrl.endClasps">
 				</order-review>
+			</div>
+
+			<div class="col-md-3 preview-container">
+				<pixelizer pixelize-id="{{ctrl.orderReviewPixelizerId}}" height="650" width="{{ctrl.previewWidth}}">
+				</pixelizer>
 			</div>
 		</div>
 	</div>

@@ -20,9 +20,13 @@
 }
 
 .finalize-modal .preview-container img,
-.finalize-modal .preview-container canvas {
+.finalize-modal .preview-container .pixelizer canvas {
     height: 650px;
 }
+
+/*.finalize-modal .preview-container .pixelizer canvas {
+    width: 150px;
+}*/
 
 /*.finalize-modal .modal-lg {
     width: 90%;
