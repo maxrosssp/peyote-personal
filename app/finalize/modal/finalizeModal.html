@@ -1,8 +1,8 @@
 <div class="modal-header">
-    <h3 class="modal-title" id="modal-title">{{ctrl.modalPages[ctrl.currentPage].title}}</h3>
+    <h3 class="modal-title" id="modal-title">{{ctrl.currentPage.title}}</h3>
 </div>
 
-<div ng-show="ctrl.currentPage === 'uploadImage'">
+<div ng-show="ctrl.currentPage.id === 'uploadImage'">
 	<div class="modal-body">
 		<div class="row upload-image">
 		  	<div class="col-md-12">
@@ -12,26 +12,43 @@
 	</div>
 
 	<div class="modal-footer">
-	    <button class="btn btn-primary" type="button" ng-click="ctrl.currentPage = 'cropImage'" ng-disabled="!ctrl.canContinue()">Next</button>
+	    <button class="btn btn-primary" type="button" ng-click="ctrl.goToNextPage()" ng-disabled="!ctrl.imageUploaded()">Next</button>
 	</div>
 </div>
 
-<div ng-show="ctrl.currentPage === 'cropImage'">
+<div ng-show="ctrl.currentPage.id === 'cropImage'">
 	<div class="modal-body">
 		<div class="row crop-image">
 			<div class="col-md-12">
-				<peyote-crop blob="ctrl.blob" bead-height="ctrl.selectedHeight" bead-width="ctrl.selectedWidth" cropped-image="ctrl.cropData"></peyote-crop>
+				<peyote-crop blob="ctrl.blob" bead-height="ctrl.selectedHeight" bead-width="ctrl.selectedWidth" crop-data="ctrl.cropData"></peyote-crop>
 			</div>
 		</div>
 	</div>
 
 	<div class="modal-footer">
-		<button class="btn btn-primary" type="button" ng-click="ctrl.currentPage = 'uploadImage'">Back</button>
-	    <button class="btn btn-primary" type="button" ng-click="ctrl.cropAndContinue()">Crop and Continue</button>
+		<button class="btn btn-primary" type="button" ng-click="ctrl.goToPreviousPage()">Back</button>
+	    <button class="btn btn-primary" type="button" ng-click="ctrl.goToNextPage()">Crop and Continue</button>
 	</div>
 </div>
 
-<div ng-if="ctrl.currentPage === 'addPayment'">
+<div ng-if="ctrl.currentPage.id === 'reviewOrder'">
+	<div class="modal-body">
+		<div class="row review-order">
+			<div class="col-md-12">
+				<order-review pixelize-id="'review-order-preview'"
+							  end-clasps="ctrl.endClasps">
+				</order-review>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal-footer">
+		<button class="btn btn-primary" type="button" ng-click="ctrl.goToPreviousPage()">Back</button>
+	    <button class="btn btn-primary" type="button" ng-click="ctrl.goToNextPage()">Checkout</button>
+	</div>
+</div>
+
+<div ng-if="ctrl.currentPage.id === 'addPayment'">
 	<div class="modal-body">
 		<div class="row add-payment">
 		  	<div class="col-md-12">
@@ -41,7 +58,7 @@
 	</div>
 
 	<div class="modal-footer">
-		<button class="btn btn-primary" type="button" ng-click="ctrl.currentPage = 'cropImage'">Back</button>
-	    <button class="btn btn-primary" type="button" ng-click="ctrl.currentPage = 'reviewOrder'" ng-disabled="!ctrl.paymentAdded">Review Order</button>
+		<button class="btn btn-primary" type="button" ng-click="ctrl.goToPreviousPage()">Back</button>
+	    <button class="btn btn-primary" type="button" ng-click="ctrl.goToNextPage()" ng-disabled="!ctrl.paymentAdded">Review Order</button>
 	</div>
 </div>

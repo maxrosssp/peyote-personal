@@ -2,25 +2,16 @@
 
 angular.module('app').directive('fileUpload', [fileUpload]);
 
-function FileUploadCtrl($scope) {
-  var ctrl = this;
-
-  $scope.onUpload = function(blob) {
-    ctrl.onUpload(blob);
-  };
-}
-
 function fileUpload() {
   return {
     restrict: 'E',
-    scope: {},
-    bindToController: {
-      onUpload: '=',
+    require: '^^finalizeModal',
+    scope: {
       label: '<'
     },
-    controller: [
-      '$scope', FileUploadCtrl
-    ],
+    link: function(scope, element, attrs, FinalizeModalCtrl) {
+      scope.onUpload = FinalizeModalCtrl.onFile;
+    },
     templateUrl: 'components/fileUpload/fileUpload.html'
   };
 }

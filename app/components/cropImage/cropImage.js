@@ -12,9 +12,6 @@ function CropImageCtrl($scope, $timeout, Cropper, PEYOTE_VALUES, CropImageServic
   ctrl.$onInit = function() {
     zoomRatio = 0;
 
-    ctrl.previewWidth = 120;
-    ctrl.previewHeight = 650;
-
     ctrl.cropper = {};
     ctrl.cropperProxy = 'ctrl.cropper.callMethod';
     ctrl.showEvent = 'show';
@@ -43,6 +40,9 @@ function CropImageCtrl($scope, $timeout, Cropper, PEYOTE_VALUES, CropImageServic
 
     ctrl.selectedHeight = ctrl.heightOptions[0].beads;
     ctrl.selectedWidth = ctrl.widthOptions[0].beads;
+
+    ctrl.previewHeight = 650;
+    ctrl.previewWidth = 120;
 
     ctrl.cropData = cropData;
 
@@ -145,13 +145,28 @@ function CropImageCtrl($scope, $timeout, Cropper, PEYOTE_VALUES, CropImageServic
   };
 
   var dragend = function() {
-    $timeout(ctrl.updatePreview);
+    $timeout(function() {
+      ctrl.updatePreview();
+
+
+      $scope.$broadcast('pixelize-pixel-preview', ctrl.previewUrl, ctrl.previewData, ctrl.palette);
+    });
   };
 
   ctrl.updatePreview = function() {
     ctrl.updateSize();
 
-    ctrl.previewUrl = cropData();
+    var previewData = cropData();
+    ctrl.palette = $colorThief.getPalette(previewData, 3);
+
+    ctrl.previewData = {
+      height: 650,
+      width: 150,
+      rows: ctrl.selectedHeight,
+      columns: ctrl.selectedWidth
+    };
+
+    ctrl.previewUrl = previewData.toDataURL();
   };
 
   var crop = function(dataNew) {
@@ -163,26 +178,23 @@ function CropImageCtrl($scope, $timeout, Cropper, PEYOTE_VALUES, CropImageServic
 
     var imgData = ctrl.cropper.callMethod('getCroppedCanvas');
 
-    ctrl.palette = $colorThief.getPalette(imgData, 2, 10);
-    var fillColor = CropImageService.bestColorOption(ctrl.palette, ctrl.dominantColor);
+    var palette = $colorThief.getPalette(imgData, 3);
+    var fillColor = CropImageService.bestColorOption(palette, ctrl.dominantColor);
 
-    var croppedImage = ctrl.cropper.callMethod('getCroppedCanvas', {fillColor: CropImageService.rgbToHex(fillColor)}).toDataURL();
-
-    ctrl.croppedImage = croppedImage;
-
-    return croppedImage;
+    return ctrl.cropper.callMethod('getCroppedCanvas', {fillColor: CropImageService.rgbToHex(fillColor)});
   };
 }
 
 function cropImage() {
   return {
     restrict: 'E',
+    require: '^^FinalizeModalCtrl',
     scope: {},
     bindToController: {
       blob: '<',
       selectedHeight: '=beadHeight',
       selectedWidth: '=beadWidth',
-      croppedImage: '='
+      cropData: '='
     },
     controller: [
       '$scope', '$timeout', 'Cropper', 'PEYOTE_VALUES', 'CropImageService', '$colorThief', CropImageCtrl

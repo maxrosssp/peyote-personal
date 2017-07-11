@@ -74,28 +74,14 @@
 	</div>
 
 	<div class="col-md-4">
-		<div ng-if="ctrl.previewUrl" class="preview-container row">
+		<div class="preview-container row">
 			<div class="col-md-6">
-				<img ng-src="{{ctrl.previewUrl}}" 
+				<img ng-src="{{ctrl.previewUrl}}"
 				     color-thief 
 				     color-thief-dominant="ctrl.dominantColor">
 			</div>
 
-			<canvas id="pixel-preview" width="{{ctrl.previewWidth}}" height="{{ctrl.previewHeight}}" class="col-md-6" ng-if="ctrl.previewUrl"
-					pixelizer 
-					pixelizer-url="ctrl.previewUrl" 
-					pixelizer-rows="ctrl.selectedHeight"
-					pixelizer-columns="ctrl.selectedWidth"
-					pixelizer-height="ctrl.previewHeight"
-					pixelizer-width="ctrl.previewWidth"
-					pixelizer-palette="ctrl.palette">
-				<!-- <img pixelizer
-					 pixelizer-url="ctrl.previewUrl"
-					 pixelizer-height="ctrl.previewHeight"
-					 pixelizer-width="ctrl.previewWidth"
-				     pixelizer-rows="ctrl.selectedHeight"
-				     pixelizer-columns="ctrl.selectedWidth"> -->
-			</canvas>
+			<pixelizer pixelize-id="'pixel-preview'" class="col-md-6"></pixelizer>
 		</div>
 	</div>
 </div>

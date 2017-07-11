@@ -142,24 +142,25 @@ function CropImageService($scope) {
     return getImageCropIntersections(imageLines, cropLines);
   };
 
+  var colorDistance = function(c1, c2) {
+    return Math.sqrt(Math.pow(c2[0] - c1[0], 2) + Math.pow(c2[1] - c1[1], 2) + Math.pow(c2[2] - c1[2], 2));
+  };
+
   var distanceToColor = function(color) {
     return function(c1) {
-      Math.sqrt(Math.pow(color[0] - c1[0], 2) + Math.pow(color[1] - c1[1], 2) + Math.pow(color[2] - c1[2], 2));
+      return colorDistance(c1, color);
     };
   };
 
   var bestColorOption = function(palette, matchColor) {
+    if (palette === null || palette.length < 1 || !matchColor) {
+      return '#afa0af';
+    }
+
     palette = angular.copy(palette);
 
-    if (palette === null || palette.length < 1) {
-      return '#fff0ff';
-    }
-
-    if (!matchColor) {
-      return palette[0];
-    }
-
     var distFunc = distanceToColor(matchColor);
+
     palette.sort(function(c1, c2) {
       return distFunc(c1) - distFunc(c2);
     });

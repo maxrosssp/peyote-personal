@@ -2,45 +2,60 @@
 
 angular.module('app').directive('pixelizer', ['CropImageService', pixelizer]);
 
-function pixelizer(CropImageService) {
+function PixelizerCtrl(CropImageService) {
+  var ctrl = this;
+
+  ctrl.$onInit = function() {
+  
+  };
+
+  ctrl.$onChanges = function(changesObject) {
+
+  };
+}
+
+function pixelizer() {
   return {
-    restrict: 'A',
+    restrict: 'E',
+    require: '^^finalizeModal',
     scope: {
-      url: '<pixelizerUrl',
-      height: '<pixelizerHeight',
-      width: '<pixelizerWidth',
-      rows: '<pixelizerRows',
-      columns: '<pixelizerColumns',
-      palette: '<pixelizerPalette'
+      pixelizeId: '<'
     },
-    link: function(scope, element, attrs) {
-      paper.install(scope);
-      paper.setup(attrs.id);
+    link: function(scope, element, attrs, ctrl) {
+      scope.$on('pixelize-' + scope.pixelizeId, function(event, url, data, palette) {
+        attrs.height = data.height;
+        attrs.width = data.width;
 
-      var columns = parseInt(scope.columns);
-      var rows = parseInt(scope.rows);
+        paper.setup(scope.pixelizeId);
 
-      var raster = new paper.Raster(scope.url);
-      raster.visible = false;
+        var raster = new paper.Raster(url);
 
-      raster.fitBounds(paper.view.bounds, true);
+        raster.on('load', function() {
+          raster.fitBounds(paper.view.bounds, true);
 
-      var pixelWidth = parseInt(scope.width / columns) + 1;
-      var pixelHeight = parseInt(scope.height / rows) + 1;
+          var columns = parseInt(data.columns);
+          var rows = parseInt(data.rows);
+          var pixelWidth = data.width / columns;
+          var pixelHeight = data.height / rows;
 
-      raster.on('load', function() {
-        for (var y = 0; y < rows; y++) {
-          for(var x = 0; x < columns; x++) {
-            var point = new paper.Point(x * pixelWidth, y * pixelHeight);
-            var path = new paper.Path.Rectangle(point, new paper.Size(pixelWidth, pixelHeight));
-            var color = CropImageService.bestColorOption(scope.palette, raster.getPixel(point));
+          raster.size = new paper.Size(columns, rows);
 
-            path.fillColor = new paper.Color(color[0], color[1], color[2]);
+          for (var y = 0; y < rows; y++) {
+            for(var x = 0; x < columns; x++) {
+              var pxColor = raster.getPixel(new paper.Point(x, y));
+
+              var path = new paper.Path.Rectangle(new paper.Point(x * pixelWidth, y * pixelHeight), new paper.Size(pixelWidth, pixelHeight));
+
+              var bestMatch = CropImageService.bestColorOption(scope.palette, [pxColor.red * 256, pxColor.green * 256, pxColor.blue * 256]);
+
+              path.fillColor = new paper.Color(bestMatch[0] / 256, bestMatch[1] / 256, bestMatch[2] / 256);
+            }
           }
-        }
+        });
 
         paper.project.activeLayer.position = paper.view.center;
       });
-    }
+    },
+    template: '<canvas id="{{pixelizeId}}"></canvas>'
   };
 }

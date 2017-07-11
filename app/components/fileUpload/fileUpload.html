@@ -1,4 +1,4 @@
 <div class="file-upload form-group">
-	<label for="fileInput">{{ctrl.label || 'Select Image'}}</label>
+	<label for="fileInput">{{label || 'Select Image'}}</label>
 	<input type="file" class="form-control" id="fileInput" onchange="angular.element(this).scope().onUpload(this.files[0])">
 </div>

@@ -2,19 +2,21 @@
 
 angular.module('app').directive('finalize', [finalize]);
 
-function FinalizeCtrl($uibModal) {
+function FinalizeCtrl($timeout, $uibModal) {
   var ctrl = this;
 
   ctrl.$onInit = function() {
+    $timeout(function() {
+      paper.install(window);
+    });
   };
 
   ctrl.checkout = function() {
     $uibModal.open({
-      templateUrl: 'finalize/modal/finalizeModal.html',
-      controller: 'FinalizeModalCtrl',
-      controllerAs: 'ctrl',
+      component: 'finalizeModal',
       size: 'lg',
-      windowClass: 'finalize-modal'
+      windowClass: 'finalize-modal',
+      backdrop: 'static'
     }).closed.then(function() {
       console.log('Done');
     });
@@ -26,7 +28,7 @@ function finalize() {
     restrict: 'E',
     scope: {},
     controller: [
-      '$uibModal', FinalizeCtrl
+      '$timeout', '$uibModal', FinalizeCtrl
     ],
     controllerAs: 'ctrl',
     templateUrl: 'finalize/finalize.html'
