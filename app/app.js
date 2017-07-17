@@ -5,6 +5,7 @@ angular.module('app', [
   'ngRoute',
   'ui.bootstrap',
   'ui.bootstrap-slider',
+  'ngProgress',
   'ngCropper',
   'ngColorThief',
   'angular-stripe',

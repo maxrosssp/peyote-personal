@@ -64,7 +64,7 @@ function FinalizeModalCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
     var cropBoxAspectRatio = (ctrl.selectedWidth * PEYOTE_VALUES.beadWidth) / (ctrl.selectedHeight * PEYOTE_VALUES.beadHeight);
     ctrl.previewWidth = parseInt(650 * cropBoxAspectRatio);
 
-    ctrl.cropData()
+    ctrl.getCroppedData()
     .then(function(croppedData) {
       var previewUrl = croppedData.toDataURL();
       var previewData = {rows: ctrl.selectedHeight, columns: ctrl.selectedWidth};
@@ -77,18 +77,6 @@ function FinalizeModalCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
     .then(function(previewUrl) {
       ctrl.goToNextPage();
     });
-
-    // ctrl.previewUrl = croppedData.toDataURL()
-    // ctrl.previewData = {
-    //   rows: ctrl.selectedHeight,
-    //   columns: ctrl.selectedWidth,
-    // };
-
-    // ctrl.palette = $colorThief.getPalette(croppedData, ctrl.colorCount || 12);
-
-    // ctrl.currentPage = 'reviewOrder';
-
-    // $scope.$broadcast('pixelize-review-order-preview', croppedData.toDataURL(), ctrl.previewData, ctrl.palette);
   };
 
   ctrl.close = function() {

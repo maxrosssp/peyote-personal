@@ -1,8 +1,10 @@
 'use strict';
 
-angular.module('app').directive('pixelizer', ['CropImageService', pixelizer]);
+angular.module('app').directive('pixelizer', [
+  'ngProgressFactory', 'CropImageService', pixelizer
+]);
 
-function pixelizer(CropImageService) {
+function pixelizer(ngProgressFactory, CropImageService) {
   return {
     restrict: 'E',
     require: '^^finalizeModal',
@@ -12,7 +14,14 @@ function pixelizer(CropImageService) {
       width: '@'
     },
     link: function(scope, element, attrs, ctrl) {
+      scope.progressbar = ngProgressFactory.createInstance();
+      scope.progressbar.setParent(angular.element(element).children()[0]);
+
       scope.$on('pixelize-' + scope.pixelizeId, function(event, url, data, palette) {
+        scope.showPixelizedImage = false;
+
+        scope.progressbar.start();
+
         paper.setup(scope.pixelizeId);
 
         var raster = new paper.Raster(url);
@@ -37,14 +46,20 @@ function pixelizer(CropImageService) {
 
               path.fillColor = new paper.Color(bestMatch[0] / 256, bestMatch[1] / 256, bestMatch[2] / 256);
             }
+
+            scope.progressbar.set((y / rows) * 100);
           }
+
+          scope.progressbar.complete();
+
+          scope.showPixelizedImage = true;
         });
 
         paper.project.activeLayer.position = paper.view.center;
       });
     },
-    template: '<canvas id="{{pixelizeId}}" height="{{height}}" width="{{width}}" ' +
+    template: '<div id="{{pixelizeId}}-progress"><canvas ng-show="showPixelizedImage" id="{{pixelizeId}}" height="{{height}}" width="{{width}}" ' +
                 'class="pixelizer ' +
-                '"></canvas>'
+                '"></canvas></div>'
   };
 }
