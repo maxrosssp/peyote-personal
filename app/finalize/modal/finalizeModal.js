@@ -33,6 +33,8 @@ function FinalizeModalCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
 
     ctrl.currentPage = ctrl.modalPages.uploadImage;
 
+    ctrl.colorCount = 12;
+
     ctrl.orderReviewPixelizerId = 'review-order-preview';
   };
 
@@ -68,7 +70,7 @@ function FinalizeModalCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
     .then(function(croppedData) {
       var previewUrl = croppedData.toDataURL();
       var previewData = {rows: ctrl.selectedHeight, columns: ctrl.selectedWidth};
-      var palette = $colorThief.getPalette(croppedData, ctrl.colorCount || 12);
+      var palette = $colorThief.getPalette(croppedData, ctrl.colorCount);
 
       $scope.$broadcast('pixelize-' + ctrl.orderReviewPixelizerId, previewUrl, previewData, palette);
 

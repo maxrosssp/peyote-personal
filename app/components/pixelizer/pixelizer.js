@@ -18,7 +18,9 @@ function pixelizer(ngProgressFactory, CropImageService) {
       scope.progressbar.setParent(angular.element(element).children()[0]);
 
       scope.$on('pixelize-' + scope.pixelizeId, function(event, url, data, palette) {
-        scope.showPixelizedImage = false;
+        scope.showPixelizedImage = true;
+
+        scope.showPixelizedCanvas = false;
 
         scope.progressbar.start();
 
@@ -27,7 +29,7 @@ function pixelizer(ngProgressFactory, CropImageService) {
         var raster = new paper.Raster(url);
 
         raster.on('load', function() {
-          raster.fitBounds(paper.view.bounds, true);
+          // raster.fitBounds(paper.view.bounds, true);
 
           var columns = parseInt(data.columns);
           var rows = parseInt(data.rows);
@@ -52,14 +54,18 @@ function pixelizer(ngProgressFactory, CropImageService) {
 
           scope.progressbar.complete();
 
-          scope.showPixelizedImage = true;
+          scope.showPixelizedCanvas = true;
         });
 
         paper.project.activeLayer.position = paper.view.center;
       });
     },
-    template: '<div id="{{pixelizeId}}-progress"><canvas ng-show="showPixelizedImage" id="{{pixelizeId}}" height="{{height}}" width="{{width}}" ' +
-                'class="pixelizer ' +
-                '"></canvas></div>'
+    template: '' +
+                // '<div id="{{pixelizeId}}-progress ng-if="showPixelizedImage"">' +
+                  '<canvas ng-show="showPixelizedCanvas" id="{{pixelizeId}}" height="{{height}}" width="{{width}}" ' +
+                  'class="pixelizer ' +
+                  '"></canvas>' +
+                // '</div>'
+                ''
   };
 }
