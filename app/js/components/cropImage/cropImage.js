@@ -19,7 +19,6 @@ function CropImageCtrl($scope, $q, $timeout, Cropper, PEYOTE_VALUES, CropImageSe
     ctrl.options = {
       viewMode: 3,
       dragMode: 'move',
-      preview: 'preview-container',
       cropBoxMovable: false,
       cropBoxResizable: false,
       doubleClickToggle: false,
@@ -156,6 +155,6 @@ function cropImage() {
       '$scope', '$q', '$timeout', 'Cropper', 'PEYOTE_VALUES', 'CropImageService', '$colorThief', CropImageCtrl
     ],
     controllerAs: 'ctrl',
-    templateUrl: 'components/cropImage/cropImage.html'
+    templateUrl: 'js/components/cropImage/cropImage.html'
   };
 }

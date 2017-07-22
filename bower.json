@@ -20,5 +20,23 @@
     "ngColorThief": "angular-colorthief#^0.2.0",
     "paper": "^0.11.4",
     "ngprogress": "^1.1.3"
+  },
+  "overrides": {
+    "html5-boilerplate": {
+      "main": [
+        "dist/css/normalize.css",
+        "dist/css/main.css",
+        "dist/js/vendor/modernizr-2.8.3.min.js"
+      ]
+    },
+    "angular-stripe": {
+      "main": "release/angular-stripe.js"
+    },
+    "paymentfont": {
+      "main": "css/paymentfont.css"
+    }
+  },
+  "resolutions": {
+    "angular": "~1.5.0"
   }
 }

@@ -1,4 +1,5 @@
 <div class="modal-header">
+	<a class="pull-right" ng-click="ctrl.close()"><span class="glyphicon glyphicon-remove"></span></a>
     <h3 class="modal-title" id="modal-title">{{ctrl.currentPage.title}}</h3>
 </div>
 
@@ -41,16 +42,17 @@
 <div ng-show="ctrl.currentPage.id === 'reviewOrder'">
 	<div class="modal-body">
 		<div class="row review-order">
-			<div class="col-md-offset-1 col-md-8">
-				<order-review color-count="ctrl.colorCount"
-							  bead-height="ctrl.selectedHeight"
+			<div class="col-md-9">
+				<order-review bead-height="ctrl.selectedHeight"
 							  bead-width="ctrl.selectedWidth"
-							  end-clasps="ctrl.endClasps">
+							  color-count="ctrl.colorCount"
+							  final-price="ctrl.finalPrice"
+							  must-ship="ctrl.mustShip">
 				</order-review>
 			</div>
 
 			<div class="col-md-3">
-				<pixelizer pixelize-id="{{ctrl.orderReviewPixelizerId}}" height="650" width="{{ctrl.previewWidth}}">
+				<pixelizer pixelize-id="{{ctrl.orderReviewPixelizerId}}" pixelizer-height="650" pixelizer-width="ctrl.previewWidth">
 				</pixelizer>
 			</div>
 		</div>
@@ -66,13 +68,15 @@
 	<div class="modal-body">
 		<div class="row add-payment">
 		  	<div class="col-md-12">
-		  		<make-payment></make-payment>
+		  		<make-payment must-ship="ctrl.mustShip()"
+		  					  total-price="ctrl.finalPrice">
+		  		</make-payment>
 		  	</div>
 		</div>
 	</div>
 
 	<div class="modal-footer">
 		<button class="btn btn-primary" type="button" ng-click="ctrl.goToPreviousPage()">Back</button>
-	    <button class="btn btn-primary" type="button" ng-click="ctrl.goToNextPage()" ng-disabled="!ctrl.paymentAdded">Review Order</button>
+	    <button class="btn btn-primary" type="button" ng-click="ctrl.payAndContinue()" ng-disabled="!ctrl.canContinueWithPayment">Review Order</button>
 	</div>
 </div>

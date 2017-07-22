@@ -12,6 +12,6 @@ function fileUpload() {
     link: function(scope, element, attrs, FinalizeModalCtrl) {
       scope.onUpload = FinalizeModalCtrl.onFile;
     },
-    templateUrl: 'components/fileUpload/fileUpload.html'
+    templateUrl: 'js/components/fileUpload/fileUpload.html'
   };
 }

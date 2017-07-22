@@ -9,68 +9,77 @@
   <title>My AngularJS App</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
-  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
+
+  <!-- bower:css -->
+  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css" />
+  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css" />
+  <link rel="stylesheet" href="bower_components/ng-cropper/dist/ngCropper.all.css" />
+  <link rel="stylesheet" href="bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.css" />
+  <link rel="stylesheet" href="bower_components/paymentfont/css/paymentfont.css" />
+  <link rel="stylesheet" href="bower_components/ngprogress/ngProgress.css" />
+  <!-- endbower -->
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
     integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link href="bower_components/ng-cropper/dist/ngCropper.all.css" rel="stylesheet">
-  <link rel="stylesheet" href="bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.css">
-  <link rel="stylesheet" href="bower_components/paymentfont/css/paymentfont.css">
-  <link rel="stylesheet" href="bower_components/ngprogress/ngProgress.css">
-  <link rel="stylesheet" href="app.css">
-  <link rel="stylesheet" href="components/fileUpload/fileUpload.css">
-  <link rel="stylesheet" href="components/payment/makePayment.css">
-  <link rel="stylesheet" href="view1/view1.css">
-  <link rel="stylesheet" href="finalize/modal/finalizeModal.css">
-  <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+
+  <!-- include: "type": "css", "files": "js/**/*.css" -->
+  <link href="js/app.css" rel="stylesheet" type="text/css">
+  <link href="js/components/fileUpload/fileUpload.css" rel="stylesheet" type="text/css">
+  <link href="js/components/orderReview/orderReview.css" rel="stylesheet" type="text/css">
+  <link href="js/components/payment/makePayment.css" rel="stylesheet" type="text/css">
+  <link href="js/finalize/modal/finalizeModal.css" rel="stylesheet" type="text/css">
+  <link href="js/views/home/home.css" rel="stylesheet" type="text/css">
+  <!-- /include -->
+
 </head>
 <body>
-  <ul class="menu">
-    <li><a href="#!/viewOne">viewOne</a></li>
-    <li><a href="#!/view2">view2</a></li>
-    <li><a href="#!/finalize">Finalize</a></li>
-  </ul>
-
   <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
 
   <div ng-view></div>
 
-  <div>Angular seed app: v<span app-version></span></div>
-
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
   -->
+
   <script src="bower_components/jquery/dist/jquery.js"></script>
+
+  <!-- bower:js -->
   <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/angular-loader/angular-loader.js"></script>
+  <script src="bower_components/angular-mocks/angular-mocks.js"></script>
+  <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
   <script src="bower_components/ng-cropper/dist/ngCropper.all.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+  <script src="bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.js"></script>
+  <script src="bower_components/angular-bootstrap-slider/slider.js"></script>
+  <script src="bower_components/angular-stripe/release/angular-stripe.js"></script>
   <script src="bower_components/color-thief/src/color-thief.js"></script>
   <script src="bower_components/ngColorThief/angular-colorthief.js"></script>
   <script src="bower_components/paper/dist/paper-full.js"></script>
-  <script src="bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.js"></script>
-  <script src="bower_components/angular-bootstrap-slider/slider.js"></script>
-  <script src="bower_components/ngprogress/build/ngprogress.js"></script>
+  <script src="bower_components/ngprogress/build/ngprogress.min.js"></script>
+  <!-- endbower -->
+  
   <script src="https://js.stripe.com/v3/"></script>
-  <script src="bower_components/angular-stripe/release/angular-stripe.js"></script>
-  <script src="app.js"></script>
-  <script src="constants.js"></script>
-  <script src="config.js"></script>
-  <script src="filters/rangeFilter.js"></script>
-  <script src="components/version/version.js"></script>
-  <script src="components/version/version-directive.js"></script>
-  <script src="components/version/interpolate-filter.js"></script>
-  <script src="components/fileUpload/fileUpload.js"></script>
-  <script src="components/payment/makePayment.js"></script>
-  <script src="components/cropImage/cropImage.js"></script>
-  <script src="components/cropImage/CropImageService.js"></script>
-  <script src="components/pixelizer/pixelizer.js"></script>
-  <script src="components/orderReview/orderReview.js"></script>
-  <script src="view1/view1.js"></script>
-  <script src="view2/view2.js"></script>
-  <script src="finalize/modal/finalizeModal.js"></script>
-  <script src="finalize/finalize.js"></script>
+
+  <!-- include: "type": "js", "files": ["js/**/!(*_test).js"] -->
+  <script src="js/app.js"></script>
+  <script src="js/components/cropImage/cropImage.js"></script>
+  <script src="js/components/cropImage/CropImageService.js"></script>
+  <script src="js/components/fileUpload/fileUpload.js"></script>
+  <script src="js/components/orderReview/orderReview.js"></script>
+  <script src="js/components/payment/makePayment.js"></script>
+  <script src="js/components/pixelizer/pixelizer.js"></script>
+  <script src="js/components/version/interpolate-filter.js"></script>
+  <script src="js/components/version/version-directive.js"></script>
+  <script src="js/components/version/version.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/constants.js"></script>
+  <script src="js/filters/rangeFilter.js"></script>
+  <script src="js/finalize/finalize.js"></script>
+  <script src="js/finalize/modal/finalizeModal.js"></script>
+  <!-- /include -->
 </body>
 </html>

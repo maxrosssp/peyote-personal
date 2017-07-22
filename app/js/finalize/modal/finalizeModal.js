@@ -32,10 +32,14 @@ function FinalizeModalCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
     };
 
     ctrl.currentPage = ctrl.modalPages.uploadImage;
-
     ctrl.colorCount = 12;
-
     ctrl.orderReviewPixelizerId = 'review-order-preview';
+
+    $scope.$on('can-continue-with-payment', function(event, validPayment) {
+      $timeout(function() {
+        ctrl.canContinueWithPayment = validPayment;
+      });
+    });
   };
 
   ctrl.goToNextPage = function() {
@@ -82,13 +86,7 @@ function FinalizeModalCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
   };
 
   ctrl.close = function() {
-    var croppedDataUrl;
-
-    Cropper.crop(file, data).then(Cropper.encode).then(function(dataUrl) {
-      croppedDataUrl = dataUrl;
-    });
-
-    modalInstance.close(ctrl.selectedSize, ctrl.colorCount, ctrl.croppedData.url);
+    ctrl.modalInstance.close();
   };
 }
 
@@ -96,8 +94,8 @@ function finalizeModal() {
   return {
     restrict: 'E',
     scope: {},
-    bindings: {
-      modalInstance: '<'
+    bindToController: {
+      modalInstance: '='
     },
     controller: [
       '$scope', '$timeout', '$colorThief', 'PEYOTE_VALUES', FinalizeModalCtrl
@@ -110,6 +108,6 @@ function finalizeModal() {
         ctrl.currentPage = ctrl.modalPages[page];
       });
     },
-    templateUrl: 'finalize/modal/finalizeModal.html'
+    templateUrl: 'js/finalize/modal/finalizeModal.html'
   };
 }

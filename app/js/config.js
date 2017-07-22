@@ -7,15 +7,11 @@ function Config($locationProvider, $routeProvider, STRIPE) {
     requireBase: false
   });
 
-  $routeProvider.when('/viewOne', {
-    template: '<view-one></view-one>'
+  $routeProvider.when('/', {
+    templateUrl: 'js/views/home/home.html'
   });
 
-  $routeProvider.when('/finalize', {
-    template: '<finalize></finalize>'
-  });
-
-  $routeProvider.otherwise({redirectTo: '/viewOne'});
+  $routeProvider.otherwise({redirectTo: '/'});
 
   // $window.Stripe.setPublishableKey(STRIPE.publishableKey);
 }

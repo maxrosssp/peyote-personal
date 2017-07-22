@@ -1,0 +1,7 @@
+.file-upload input[type=file] {
+  height: 350px;
+  background: white url("../../../assets/choose_file.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
