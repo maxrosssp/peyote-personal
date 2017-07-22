@@ -27,10 +27,13 @@ function finalize() {
   return {
     restrict: 'E',
     scope: {},
+    bindToController: {
+      buttonText: '@'
+    },
     controller: [
       '$timeout', '$uibModal', FinalizeCtrl
     ],
     controllerAs: 'ctrl',
-    templateUrl: 'finalize/finalize.html'
+    templateUrl: 'js/finalize/finalize.html'
   };
 }

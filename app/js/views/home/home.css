@@ -1,0 +1,22 @@
+.home-description {
+	text-align: center;
+	max-width: 600px;
+}
+
+.home-description h1 {
+	color: #676767;
+    font: 64px/1em "Nixie One", serif;
+    margin-bottom: 30px;
+    padding: 0px 40px 0px 40px;
+}
+
+.home-description h2 {
+	font: 200 25px/1.3em "San Francisco";
+    margin-bottom: 25px;
+}
+
+.home-description li {
+	font: 14px/1.3em "San Francisco";
+    opacity: .8;
+    margin: 0 auto 45px;
+}

@@ -8,18 +8,6 @@ function CropImageCtrl($scope, $q, $timeout, Cropper, PEYOTE_VALUES, CropImageSe
   var rotation = 0;
 
   ctrl.$onInit = function() {
-    var ppb = PEYOTE_VALUES.pixelsPerBead;
-    ctrl.heightOptions = PEYOTE_VALUES.heightOptions;
-    ctrl.widthOptions = PEYOTE_VALUES.widthOptions;
-
-    ctrl.selectedHeight = ctrl.heightOptions[0].beads;
-    ctrl.selectedWidth = ctrl.widthOptions[0].beads;
-
-    ctrl.previewHeight = 650;
-    ctrl.previewWidth = 120;
-
-    ctrl.getCroppedData = getCroppedData;
-
     ctrl.cropper = {};
     ctrl.cropperProxy = 'ctrl.cropper.callMethod';
     ctrl.showEvent = 'show';
@@ -31,7 +19,6 @@ function CropImageCtrl($scope, $q, $timeout, Cropper, PEYOTE_VALUES, CropImageSe
     ctrl.options = {
       viewMode: 3,
       dragMode: 'move',
-      preview: 'preview-container',
       cropBoxMovable: false,
       cropBoxResizable: false,
       doubleClickToggle: false,
@@ -44,6 +31,18 @@ function CropImageCtrl($scope, $q, $timeout, Cropper, PEYOTE_VALUES, CropImageSe
         data = dataNew;
       }
     };
+
+    var ppb = PEYOTE_VALUES.pixelsPerBead;
+    ctrl.heightOptions = PEYOTE_VALUES.heightOptions;
+    ctrl.widthOptions = PEYOTE_VALUES.widthOptions;
+
+    ctrl.selectedHeight = ctrl.heightOptions[0].beads;
+    ctrl.selectedWidth = ctrl.widthOptions[0].beads;
+
+    ctrl.previewHeight = 650;
+    // ctrl.previewWidth = 120;
+
+    ctrl.getCroppedData = getCroppedData;
 
     $timeout(showCropper);
   };
@@ -108,7 +107,7 @@ function CropImageCtrl($scope, $q, $timeout, Cropper, PEYOTE_VALUES, CropImageSe
   ctrl.updatePreview = function() {
     setupContainer();
 
-    return cropData()
+    return cropData(ctrl.previewHeight, ctrl.previewWidth)
     .then(function(previewBlob) {
       croppedData = previewBlob;
 
@@ -156,6 +155,6 @@ function cropImage() {
       '$scope', '$q', '$timeout', 'Cropper', 'PEYOTE_VALUES', 'CropImageService', '$colorThief', CropImageCtrl
     ],
     controllerAs: 'ctrl',
-    templateUrl: 'components/cropImage/cropImage.html'
+    templateUrl: 'js/components/cropImage/cropImage.html'
   };
 }
