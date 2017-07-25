@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var upload = require('./routes/upload');
+var charge = require('./routes/charge');
 
 var app = express();
 
@@ -24,6 +26,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/upload', upload);
+app.use('/charge', charge);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -47,9 +51,14 @@ app.use(function(err, req, res, next) {
  * AWS Setup
  */
 
-// var AWS = require('aws-sdk');
+var AWS = require('aws-sdk');
+AWS.config.update({region: 'us-east-1'});
 
-// AWS.config.update({region: 'us-east-1'});
+var s3 = new AWS.S3();
+
+// Create a bucket and upload something into it
+var bucketName = 'peyote-personal-orders';
+var keyName = 'hello_world.txt';
 
 /**
  * Module dependencies.

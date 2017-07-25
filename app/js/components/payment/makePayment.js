@@ -2,7 +2,7 @@
 
 angular.module('app').directive('makePayment', [makePayment]);
 
-function MakePaymentCtrl($scope, $window, $q, STRIPE) {
+function MakePaymentCtrl($scope, $window, $q, $http, STRIPE) {
   var ctrl = this;
   var document, stripe;
   var cardNumber;
@@ -65,6 +65,8 @@ function MakePaymentCtrl($scope, $window, $q, STRIPE) {
     });
 
     triedToCreateToken = canTryToCreateToken();
+
+    ctrl.stripeCharge = checkout;
   };
 
   var canTryToCreateToken = function() {
@@ -107,25 +109,6 @@ function MakePaymentCtrl($scope, $window, $q, STRIPE) {
     brandIconElement.classList.add(pfClass);
   };
 
-  // var setOutcome = function(result) {
-  //   // var successElement = document.querySelector('.success');
-  //   // var errorElement = document.querySelector('.error');
-  //   // successElement.classList.remove('visible');
-  //   // errorElement.classList.remove('visible');
-
-  //   if (result.token) {
-  //     console.log(result.token);
-  //     $scope.$emit('can-continue-with-payment', true);
-  //     // successElement.querySelector('.token').textContent = result.token.id;
-  //     // successElement.classList.add('visible');
-  //   } else if (result.error) {
-  //     console.log(result.error);
-  //     $scope.$emit('can-continue-with-payment', false);
-  //     // errorElement.textContent = result.error.message;
-  //     // errorElement.classList.add('visible');
-  //   }
-  // };
-
   var createToken = function() {
     var extraDetails = {
       name: ctrl.cardholderName,
@@ -138,22 +121,34 @@ function MakePaymentCtrl($scope, $window, $q, STRIPE) {
     });
   };
 
-  ctrl.checkout = function() {
+  var checkout = function() {
     return createToken()
     .then(function(token) {
-
+      return stripeCheckout(token.id, ctrl.totalPrice * 100);
     })
     .catch(function(error) {
-
-    });
-
-    stripe.createToken(cardNumber, extraDetails)
-    .then(function(result) {
-      if (result.token) {
-      } else if (result.error) {
-      }
+      return $q.reject();
     });
   };
+
+  var stripeCheckout = function(token, amount, description) {
+    return $http({
+      method: 'POST',
+      url: '/charge',
+      data: {
+        amount: amount,
+        currency: 'usd',
+        description: description || 'Test checkout',
+        source: token
+      }
+    })
+    .then(function(data) {
+      console.log(data);
+    })
+    .catch(function(err) {
+      console.log(err);
+    });
+  }
 }
 
 function makePayment() {
@@ -162,10 +157,11 @@ function makePayment() {
     scope: {},
     bindToController: {
       mustShip: '&',
-      totalPrice: '<'
+      totalPrice: '<',
+      stripeCharge: '='
     },
     controller: [
-      '$scope', '$window', '$q', 'STRIPE', MakePaymentCtrl
+      '$scope', '$window', '$q', '$http', 'STRIPE', MakePaymentCtrl
     ],
     controllerAs: 'ctrl',
     templateUrl: 'js/components/payment/makePayment.html'

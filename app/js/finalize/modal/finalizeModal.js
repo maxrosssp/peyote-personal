@@ -85,6 +85,13 @@ function FinalizeModalCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
     });
   };
 
+  ctrl.payAndContinue = function() {
+    return ctrl.checkout()
+    .then(function(res) {
+      console.log(res);
+    });
+  };
+
   ctrl.close = function() {
     ctrl.modalInstance.close();
   };

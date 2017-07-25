@@ -438,7 +438,8 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "		<div class=\"row add-payment\">\n" +
     "		  	<div class=\"col-md-12\">\n" +
     "		  		<make-payment must-ship=\"ctrl.mustShip()\"\n" +
-    "		  					  total-price=\"ctrl.finalPrice\">\n" +
+    "		  					  total-price=\"ctrl.finalPrice\"\n" +
+    "		  					  stripe-charge=\"ctrl.checkout\">\n" +
     "		  		</make-payment>\n" +
     "		  	</div>\n" +
     "		</div>\n" +
