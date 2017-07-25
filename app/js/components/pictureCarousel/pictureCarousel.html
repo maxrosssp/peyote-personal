@@ -1,0 +1,7 @@
+<div uib-carousel class="picture-carousel" active="ctrl.active" interval="ctrl.interval">
+  <div uib-slide ng-repeat="image in ctrl.images" index="image.id">
+    <img ng-src="{{image.url}}" style="margin:auto;">
+    <div class="carousel-caption">
+    </div>
+  </div>
+</div>

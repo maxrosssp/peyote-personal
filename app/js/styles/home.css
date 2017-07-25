@@ -1,0 +1,55 @@
+.home .heading {
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.home .text-window {
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+88,ffffff+91,ffffff+91,ffffff+93,000000+100,ffffff+100&1+63,0.82+83,0.57+91,0+100 */
+    background: -moz-linear-gradient(left, rgba(255,255,255,1) 63%, rgba(255,255,255,0.82) 83%, rgba(255,255,255,0.66) 88%, rgba(255,255,255,0.57) 91%, rgba(255,255,255,0.44) 93%, rgba(255,255,255,0) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(left, rgba(255,255,255,1) 63%,rgba(255,255,255,0.82) 83%,rgba(255,255,255,0.66) 88%,rgba(255,255,255,0.57) 91%,rgba(255,255,255,0.44) 93%,rgba(255,255,255,0) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to right, rgba(255,255,255,1) 63%,rgba(255,255,255,0.82) 83%,rgba(255,255,255,0.66) 88%,rgba(255,255,255,0.57) 91%,rgba(255,255,255,0.44) 93%,rgba(255,255,255,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#00ffffff',GradientType=1 ); /* IE6-9 */
+    width: 60%;
+    padding-right: 150px;
+    z-index: 6;
+}
+
+.home .preview-carousel {
+    width: 53%;
+    margin-left: -153px;
+    z-index: 5;
+}
+
+.home .preview-carousel img {
+    height: 717px;
+}
+
+.home .heading h1 {
+    color: #676767;
+    font: 64px/1em "Nixie One", serif;
+    margin-bottom: 30px;
+    padding: 0px 40px 0px 40px;
+}
+
+.home .heading h2 {
+    font: 200 25px/1.6em "San Francisco";
+    margin-bottom: 25px;
+}
+
+.home .description {
+    padding-bottom: 30px;
+}
+
+.home .description li {
+    font: 18px/1.7em "San Francisco";
+    opacity: .8;
+    margin: 0 auto 45px;
+}
+
+.home .finalize {
+    text-align: center;
+}
+
+.home .finalize .btn {
+    width: 60%;
+}

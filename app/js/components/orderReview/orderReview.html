@@ -39,7 +39,7 @@
                 <td class="col-md-1 text-center"> -- </td>
             </tr>
 
-            <tr class="collapsable-row" uib-collapse="!ctrl.includeBeads">
+            <tr class="collapsable-row" ng-if="ctrl.includeBeads">
                 <td class="col-md-1 text-center"></td>
                 <td class="col-md-7"><em> • Size ({{ctrl.templateSize.inches.display}}) </em></td>
                 <td class="col-md-2" style="text-align: center"> {{ctrl.templateSize.inches.value}} in.<sup>2</sup> </td>
@@ -47,7 +47,7 @@
                 <td class="col-md-1 text-center"> {{ctrl.templateSize.inches.value * ctrl.pricePerSquareInch | currency:'$':2}} </td>
             </tr>
 
-            <tr class="collapsable-row" uib-collapse="!ctrl.includeBeads">
+            <tr class="collapsable-row" ng-if="ctrl.includeBeads">
                 <td class="col-md-1 text-center"></td>
                 <td class="col-md-7"><em> • Extra colors (colors over 12)</em></td>
                 <td class="col-md-2" style="text-align: center"> {{ctrl.colorCount - 12}} </td>

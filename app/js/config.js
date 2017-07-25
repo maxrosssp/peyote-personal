@@ -7,11 +7,21 @@ function Config($locationProvider, $routeProvider, STRIPE) {
     requireBase: false
   });
 
-  $routeProvider.when('/', {
-    templateUrl: 'js/views/home/home.html'
+  $routeProvider
+  .when('/home', {
+    templateUrl: 'js/views/home.html'
+  })
+  .when('/about', {
+    templateUrl: 'js/views/about.html'
+  })
+  .when('/faq', {
+    templateUrl: 'js/views/faq.html'
+  })
+  .when('/contact', {
+    templateUrl: 'js/views/contact.html'
   });
 
-  $routeProvider.otherwise({redirectTo: '/'});
+  $routeProvider.otherwise({redirectTo: '/home'});
 
   // $window.Stripe.setPublishableKey(STRIPE.publishableKey);
 }

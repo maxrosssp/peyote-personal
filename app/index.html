@@ -25,10 +25,12 @@
   <!-- include: "type": "css", "files": "js/**/*.css" -->
   <link href="js/app.css" rel="stylesheet" type="text/css">
   <link href="js/components/fileUpload/fileUpload.css" rel="stylesheet" type="text/css">
+  <link href="js/components/navbar/navbar.css" rel="stylesheet" type="text/css">
   <link href="js/components/orderReview/orderReview.css" rel="stylesheet" type="text/css">
   <link href="js/components/payment/makePayment.css" rel="stylesheet" type="text/css">
+  <link href="js/components/pictureCarousel/pictureCarousel.css" rel="stylesheet" type="text/css">
   <link href="js/finalize/modal/finalizeModal.css" rel="stylesheet" type="text/css">
-  <link href="js/views/home/home.css" rel="stylesheet" type="text/css">
+  <link href="js/styles/home.css" rel="stylesheet" type="text/css">
   <!-- /include -->
 
 </head>
@@ -37,10 +39,13 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
 
+  <navbar></navbar>
+  
   <div ng-view></div>
 
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   -->
 
   <script src="bower_components/jquery/dist/jquery.js"></script>
@@ -60,6 +65,7 @@
   <script src="bower_components/ngColorThief/angular-colorthief.js"></script>
   <script src="bower_components/paper/dist/paper-full.js"></script>
   <script src="bower_components/ngprogress/build/ngprogress.min.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
   <!-- endbower -->
   
   <script src="https://js.stripe.com/v3/"></script>
@@ -69,12 +75,11 @@
   <script src="js/components/cropImage/cropImage.js"></script>
   <script src="js/components/cropImage/CropImageService.js"></script>
   <script src="js/components/fileUpload/fileUpload.js"></script>
+  <script src="js/components/navbar/navbar.js"></script>
   <script src="js/components/orderReview/orderReview.js"></script>
   <script src="js/components/payment/makePayment.js"></script>
+  <script src="js/components/pictureCarousel/pictureCarousel.js"></script>
   <script src="js/components/pixelizer/pixelizer.js"></script>
-  <script src="js/components/version/interpolate-filter.js"></script>
-  <script src="js/components/version/version-directive.js"></script>
-  <script src="js/components/version/version.js"></script>
   <script src="js/config.js"></script>
   <script src="js/constants.js"></script>
   <script src="js/filters/rangeFilter.js"></script>

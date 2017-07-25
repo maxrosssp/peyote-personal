@@ -6,6 +6,19 @@ function FinalizeCtrl($timeout, $uibModal) {
   var ctrl = this;
 
   ctrl.$onInit = function() {
+    var s3Obj = new AWS.S3({
+      params: {
+        Bucket: 'peyote-personal-orders'
+      }
+    }).putObject({
+      Key: 'newPhoto',
+      Body: 'File',
+      ContentType: 'String'
+    }, function(err, data) {
+      console.log(err);
+      console.log(data);
+    });
+
     $timeout(function() {
       paper.install(window);
     });

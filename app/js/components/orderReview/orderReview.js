@@ -13,19 +13,17 @@ function OrderReviewCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
     ctrl.priceToShip = 5;
     ctrl.salesTax = 0.06;
 
-    ctrl.templateSize = calculateTemplateSize();
-    
-    ctrl.updateFinalPrice();
+    ctrl.mustShip = mustShip;
   };
 
   var calculateTemplateSize = function() {
     var selectedHeight = PEYOTE_VALUES.heightOptions.find(function(option) {
       return option.beads === ctrl.beadHeight;
-    });
+    }) || {};
 
     var selectedWidth = PEYOTE_VALUES.widthOptions.find(function(option) {
       return option.beads === ctrl.beadWidth;
-    });
+    }) || {};
 
     var sizeInches = selectedHeight.inches + ' in. x ' + selectedWidth.inches + ' in.';
     var sizeBeads = parseInt(selectedHeight.beads) + ' x ' + selectedWidth.beads + ' beads';
@@ -39,9 +37,9 @@ function OrderReviewCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
   var calculateSubtotal = function() {
     var price = ctrl.templatePrice;
 
-    if (ctrl.includeBeads) {
+    if (ctrl.includeBeads && ctrl.templateSize) {
       price += ctrl.pricePerSquareInch * ctrl.templateSize.inches.value;
-      price += ctrl.pricePerColor * ctrl.colorCount;
+      price += ctrl.pricePerColor * (ctrl.colorCount - 12);
     }
 
     if (ctrl.includeClasps) {
@@ -51,7 +49,7 @@ function OrderReviewCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
     return price;
   };
 
-  ctrl.mustShip = function() {
+  var mustShip = function() {
     return ctrl.includeBeads || ctrl.includeClasps;
   };
 
@@ -67,7 +65,7 @@ function OrderReviewCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
     ctrl.subtotal = calculateSubtotal();
 
     var finalPrice = ctrl.subtotal * (1 + ctrl.salesTax);
-    if (ctrl.mustShip()) {
+    if (mustShip()) {
       finalPrice += ctrl.priceToShip;
     }
 

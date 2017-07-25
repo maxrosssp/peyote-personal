@@ -1,0 +1,13 @@
+.picture-carousel {
+	background: none;
+}
+
+a.left.carousel-control, 
+a.right.carousel-control {
+    background: none;
+    cursor: default;
+}
+
+.picture-carousel .glyphicon {
+    font-size: 0px;
+}
