@@ -2,8 +2,9 @@
 
 angular.module('app').directive('finalizeModal', [finalizeModal]);
 
-function FinalizeModalCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
+function FinalizeModalCtrl($scope, $timeout, $http, $colorThief, PEYOTE_VALUES) {
   var ctrl = this;
+  var finalCroppedData;
 
   ctrl.$onInit = function() {
     ctrl.modalPages = {
@@ -72,6 +73,8 @@ function FinalizeModalCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
 
     ctrl.getCroppedData()
     .then(function(croppedData) {
+      finalCroppedData = angular.copy(croppedData);
+
       var previewUrl = croppedData.toDataURL();
       var previewData = {rows: ctrl.selectedHeight, columns: ctrl.selectedWidth};
       var palette = $colorThief.getPalette(croppedData, ctrl.colorCount);
@@ -86,9 +89,19 @@ function FinalizeModalCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
   };
 
   ctrl.payAndContinue = function() {
-    return ctrl.checkout()
+    var finalSpecs = {
+      beadHeight: ctrl.selectedHeight,
+      beadWidth: ctrl.selectedWidth,
+      colorCount: ctrl.colorCount,
+      includeBeads: ctrl.includeBeads,
+      includeClasps: ctrl.includeClasps
+    };
+
+    return ctrl.checkout(finalCroppedData, finalSpecs)
     .then(function(res) {
       console.log(res);
+      
+      return res;
     });
   };
 
@@ -105,7 +118,7 @@ function finalizeModal() {
       modalInstance: '='
     },
     controller: [
-      '$scope', '$timeout', '$colorThief', 'PEYOTE_VALUES', FinalizeModalCtrl
+      '$scope', '$timeout', '$http', '$colorThief', 'PEYOTE_VALUES', FinalizeModalCtrl
     ],
     controllerAs: 'ctrl',
     link: function(scope, element, attrs, ctrl) {

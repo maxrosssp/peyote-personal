@@ -1,6 +1,6 @@
-angular.module('app').config(['$locationProvider', '$routeProvider', 'STRIPE', Config]);
+angular.module('app').config(['$locationProvider', '$routeProvider', '$qProvider', 'STRIPE', Config]);
 
-function Config($locationProvider, $routeProvider, STRIPE) {
+function Config($locationProvider, $routeProvider, $qProvider, STRIPE) {
   $locationProvider.hashPrefix('!');
   $locationProvider.html5Mode({
     enabled: false,
@@ -22,6 +22,8 @@ function Config($locationProvider, $routeProvider, STRIPE) {
   });
 
   $routeProvider.otherwise({redirectTo: '/home'});
+
+  $qProvider.errorOnUnhandledRejections(false);
 
   // $window.Stripe.setPublishableKey(STRIPE.publishableKey);
 }

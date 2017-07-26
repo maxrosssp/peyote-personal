@@ -2,7 +2,7 @@
 
 angular.module('app').directive('makePayment', [makePayment]);
 
-function MakePaymentCtrl($scope, $window, $q, $http, STRIPE) {
+function MakePaymentCtrl($scope, $window, $q, $http, STRIPE, FinalizeService) {
   var ctrl = this;
   var document, stripe;
   var cardNumber;
@@ -115,16 +115,31 @@ function MakePaymentCtrl($scope, $window, $q, $http, STRIPE) {
       address_zip: ctrl.zipCode
     };
 
-    return stripe.createToken(cardNumber, extraDetails)
+    var deferred = $q.defer();
+
+    stripe.createToken(cardNumber, extraDetails)
     .then(function(result) {
-      return result.token || $q.reject(result.error || result);
+      if (result.token) { 
+        deferred.resolve({
+          token: result.token.id,
+          name: ctrl.cardholderName
+        });
+      } else {
+        deferred.reject(result.error || result);
+      }
+    })
+    .catch(function(err) {
+      deferred.reject(err);
     });
+
+    return deferred.promise;
   };
 
-  var checkout = function() {
+  var checkout = function(finalCroppedData, finalSpecs) {
     return createToken()
-    .then(function(token) {
-      return stripeCheckout(token.id, ctrl.totalPrice * 100);
+    .then(function(tokenData) {
+      return FinalizeService.finalize(finalCroppedData, finalSpecs, tokenData);
+      // return stripeCheckout(token, ctrl.totalPrice * 100);
     })
     .catch(function(error) {
       return $q.reject();
@@ -141,14 +156,8 @@ function MakePaymentCtrl($scope, $window, $q, $http, STRIPE) {
         description: description || 'Test checkout',
         source: token
       }
-    })
-    .then(function(data) {
-      console.log(data);
-    })
-    .catch(function(err) {
-      console.log(err);
     });
-  }
+  };
 }
 
 function makePayment() {
@@ -161,7 +170,7 @@ function makePayment() {
       stripeCharge: '='
     },
     controller: [
-      '$scope', '$window', '$q', '$http', 'STRIPE', MakePaymentCtrl
+      '$scope', '$window', '$q', '$http', 'STRIPE', 'FinalizeService', MakePaymentCtrl
     ],
     controllerAs: 'ctrl',
     templateUrl: 'js/components/payment/makePayment.html'

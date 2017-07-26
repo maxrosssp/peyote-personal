@@ -416,6 +416,8 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "							  bead-width=\"ctrl.selectedWidth\"\n" +
     "							  color-count=\"ctrl.colorCount\"\n" +
     "							  final-price=\"ctrl.finalPrice\"\n" +
+    "							  include-beads=\"ctrl.includeBeads\"\n" +
+    "							  include-clasps=\"ctrl.includeClasps\"\n" +
     "							  must-ship=\"ctrl.mustShip\">\n" +
     "				</order-review>\n" +
     "			</div>\n" +

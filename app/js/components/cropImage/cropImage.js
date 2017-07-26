@@ -2,7 +2,7 @@
 
 angular.module('app').directive('peyoteCrop', [cropImage]);
 
-function CropImageCtrl($scope, $q, $timeout, Cropper, PEYOTE_VALUES, CropImageService, $colorThief) {
+function CropImageCtrl($scope, $q, $http, $timeout, Cropper, PEYOTE_VALUES, CropImageService, $colorThief) {
   var ctrl = this;
   var file, data, showCropper, hideCropper, containerData, croppedData;
   var rotation = 0;
@@ -152,7 +152,7 @@ function cropImage() {
       getCroppedData: '='
     },
     controller: [
-      '$scope', '$q', '$timeout', 'Cropper', 'PEYOTE_VALUES', 'CropImageService', '$colorThief', CropImageCtrl
+      '$scope', '$q', '$http', '$timeout', 'Cropper', 'PEYOTE_VALUES', 'CropImageService', '$colorThief', CropImageCtrl
     ],
     controllerAs: 'ctrl',
     templateUrl: 'js/components/cropImage/cropImage.html'

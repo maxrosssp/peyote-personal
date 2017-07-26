@@ -24,4 +24,13 @@ angular.module('app')
 
 .constant('STRIPE', {
   publishableKey: 'pk_test_8lpNNwFVokUif3qxk2N7fPd6'
+})
+
+.constant('PEYOTE_PRICES', {
+  templatePrice: 20,
+  pricePerSquareInch: 1.5,
+  pricePerColor: 1,
+  priceForClasps: 3,
+  priceToShip: 5,
+  salesTax: 0.06
 });

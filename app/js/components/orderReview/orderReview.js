@@ -2,7 +2,7 @@
 
 angular.module('app').directive('orderReview', [orderReview]);
 
-function OrderReviewCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
+function OrderReviewCtrl(OrderReviewService) {
   var ctrl = this;
 
   ctrl.$onInit = function() {
@@ -16,60 +16,29 @@ function OrderReviewCtrl($scope, $timeout, $colorThief, PEYOTE_VALUES) {
     ctrl.mustShip = mustShip;
   };
 
-  var calculateTemplateSize = function() {
-    var selectedHeight = PEYOTE_VALUES.heightOptions.find(function(option) {
-      return option.beads === ctrl.beadHeight;
-    }) || {};
-
-    var selectedWidth = PEYOTE_VALUES.widthOptions.find(function(option) {
-      return option.beads === ctrl.beadWidth;
-    }) || {};
-
-    var sizeInches = selectedHeight.inches + ' in. x ' + selectedWidth.inches + ' in.';
-    var sizeBeads = parseInt(selectedHeight.beads) + ' x ' + selectedWidth.beads + ' beads';
-
-    return {
-      inches: {display: sizeInches, value: selectedHeight.inches * selectedWidth.inches},
-      beads: {display: sizeBeads, value: parseInt(selectedHeight.beads) * selectedWidth.beads}
-    };
-  };
-
-  var calculateSubtotal = function() {
-    var price = ctrl.templatePrice;
-
-    if (ctrl.includeBeads && ctrl.templateSize) {
-      price += ctrl.pricePerSquareInch * ctrl.templateSize.inches.value;
-      price += ctrl.pricePerColor * (ctrl.colorCount - 12);
-    }
-
-    if (ctrl.includeClasps) {
-      price += ctrl.priceForClasps;
-    }
-
-    return price;
-  };
-
   var mustShip = function() {
     return ctrl.includeBeads || ctrl.includeClasps;
   };
 
   ctrl.$onChanges = function(changesObj) {
     if (changesObj.beadHeight || changesObj.beadWidth) {
-      ctrl.templateSize = calculateTemplateSize();
+      ctrl.templateSize = OrderReviewService.calculateTemplateSize(ctrl.beadHeight, ctrl.beadWidth);
     }
 
     ctrl.updateFinalPrice();
   };
 
   ctrl.updateFinalPrice = function() {
-    ctrl.subtotal = calculateSubtotal();
+    ctrl.subtotal = OrderReviewService.calculateSubtotal({
+      templateSize: ctrl.templateSize,
+      colorCount: ctrl.colorCount,
+      includeBeads: ctrl.includeBeads,
+      includeClasps: ctrl.includeClasps
+    });
 
-    var finalPrice = ctrl.subtotal * (1 + ctrl.salesTax);
-    if (mustShip()) {
-      finalPrice += ctrl.priceToShip;
-    }
+    var shipAndTax = OrderReviewService.shippingAndTaxCost(ctrl.subtotal, mustShip());
 
-    ctrl.finalPrice = finalPrice;
+    ctrl.finalPrice = ctrl.subtotal + shipAndTax;
   };
 }
 
@@ -83,10 +52,12 @@ function orderReview() {
       beadWidth: '<',
       colorCount: '<',
       finalPrice: '=',
+      includeBeads: '=',
+      includeClasps: '=',
       mustShip: '='
     },
     controller: [
-      '$scope', '$timeout', '$colorThief', 'PEYOTE_VALUES', OrderReviewCtrl
+      'OrderReviewService', OrderReviewCtrl
     ],
     controllerAs: 'ctrl',
     templateUrl: 'js/components/orderReview/orderReview.html'
