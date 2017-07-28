@@ -120,17 +120,17 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "        <span class=\"icon-bar\"></span>\n" +
     "      </button>\n" +
     "\n" +
-    "      <a class=\"navbar-brand\" href=\"#!\">PeyPer</a>\n" +
+    "      <a class=\"navbar-brand\" href=\"/\">PeyPer</a>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n" +
     "      <ul class=\"nav navbar-nav\">\n" +
-    "        <li class=\"active\"><a href=\"#!\">Home <span class=\"sr-only\">(current)</span></a></li>\n" +
-    "        <li><a href=\"#!about\">About</a></li>\n" +
-    "        <li><a href=\"#!faq\">FAQ</a></li>\n" +
+    "        <li class=\"active\"><a href=\"/\">Home <span class=\"sr-only\">(current)</span></a></li>\n" +
+    "        <li><a href=\"/about\">About</a></li>\n" +
+    "        <li><a href=\"/faq\">FAQ</a></li>\n" +
     "      </ul>\n" +
     "      <ul class=\"nav navbar-nav navbar-right\">\n" +
-    "        <li><a href=\"#!contact\">Contact</a></li>\n" +
+    "        <li><a href=\"/contact\">Contact</a></li>\n" +
     "      </ul>\n" +
     "    </div>\n" +
     "  </div>\n" +
@@ -250,101 +250,142 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "	</div>\n" +
     "\n" +
     "	<div class=\"row make-payment\">\n" +
-    "		<form class=\"col-md-6\">\n" +
+    "		<div class=\"col-md-6\">\n" +
     "			<legend>Payment Info</legend>\n" +
     "\n" +
-    "			<fieldset class=\"well\">\n" +
-    "				<div class=\"form-group\">\n" +
-    "					<label for=\"cardholder-name\">Name On Card</label>\n" +
-    "					<input id=\"cardholder-name\" \n" +
-    "						   ng-model=\"ctrl.cardholderName\" \n" +
-    "						   class=\"field form-control\"\n" +
-    "						   ng-change=\"ctrl.canContinue()\">\n" +
-    "				</div>\n" +
+    "			<div class=\"well\">\n" +
+    "				<stripe-payment get-token=\"ctrl.getToken\" can-create-token=\"ctrl.canCreateToken\"></stripe-payment>\n" +
+    "			</div>\n" +
+    "		</div>\n" +
+    "\n" +
+    "		<form name=\"cardholderInfo\" class=\"col-md-6\">\n" +
+    "			<fieldset>\n" +
+    "				<legend>Send To</legend>\n" +
     "\n" +
     "				<div class=\"row\">\n" +
-    "					<div class=\"form-group col-md-9\">\n" +
-    "						<label for=\"card-number\">Card Number</label>\n" +
-    "						<div class=\"input-group\">\n" +
-    "							<span class=\"input-group-addon brand\" id=\"credit-card-type\"><i class=\"pf pf-credit-card\" id=\"brand-icon\"></i></span>\n" +
-    "							<div id=\"card-number\" class=\"field\" aria-describedby=\"credit-card-type\"></div>\n" +
+    "					<div class=\"form-group col-md-12\">\n" +
+    "						<label for=\"email\">Email</label>\n" +
+    "						<input id=\"email\" type=\"email\" placeholder=\"Email\" class=\"form-control\" ng-model=\"ctrl.email\">\n" +
+    "					</div>\n" +
+    "\n" +
+    "					<div class=\"form-group col-md-12\">\n" +
+    "						<label for=\"email-confirm\">Confirm Email</label>\n" +
+    "						<input id=\"email-confirm\" type=\"email\" placeholder=\"Confirm Email\" class=\"form-control\" ng-model=\"ctrl.emailConfirm\">\n" +
+    "					</div>\n" +
+    "				</div>\n" +
+    "\n" +
+    "				<div class=\"row\" ng-if=\"ctrl.mustShip()\">\n" +
+    "					<legend>Shipping Address</legend>\n" +
+    "\n" +
+    "					<div class=\"form-group col-md-12\">\n" +
+    "						<label class=\"col-sm-2 control-label\" for=\"textinput\">Line 1</label>\n" +
+    "						<div class=\"col-sm-10\">\n" +
+    "						  	<input type=\"text\" placeholder=\"Address Line 1\" class=\"form-control\">\n" +
     "						</div>\n" +
     "					</div>\n" +
     "\n" +
-    "					<div class=\"form-group col-md-3\">\n" +
-    "						<label for=\"card-cvc\">CVC</label>\n" +
-    "						<div id=\"card-cvc\" class=\"field\"></div>\n" +
-    "					</div>\n" +
-    "				</div>\n" +
-    "\n" +
-    "				<div class=\"row\">\n" +
-    "					<div class=\"form-group col-md-5\">\n" +
-    "						<label for=\"card-expiry\">Expiration Date</label>\n" +
-    "						<div id=\"card-expiry\" class=\"field\"></div>\n" +
+    "					<div class=\"form-group col-md-12\">\n" +
+    "						<label class=\"col-sm-2 control-label\" for=\"textinput\">Line 2</label>\n" +
+    "						<div class=\"col-sm-10\">\n" +
+    "						  	<input type=\"text\" placeholder=\"Address Line 2\" class=\"form-control\">\n" +
+    "						</div>\n" +
     "					</div>\n" +
     "\n" +
-    "					<div class=\"form-group col-md-7\">\n" +
-    "						<label for=\"card-zip-code\">Zip Code</label>\n" +
-    "						<input id=\"card-zip-code\" \n" +
-    "							   type=\"text\" \n" +
-    "							   ng-model=\"ctrl.zipCode\" \n" +
-    "							   maxlength=\"{{ctrl.zipCodeLength}}\" \n" +
-    "							   class=\"form-control\" \n" +
-    "							   ng-change=\"ctrl.canContinue()\">\n" +
+    "					<div class=\"form-group col-md-12\">\n" +
+    "						<label class=\"col-sm-2 control-label\" for=\"textinput\">City</label>\n" +
+    "						<div class=\"col-sm-10\">\n" +
+    "						  	<input type=\"text\" placeholder=\"City\" class=\"form-control\">\n" +
+    "						</div>\n" +
     "					</div>\n" +
-    "				</div>\n" +
-    "			</fieldset>\n" +
-    "		</form>\n" +
     "\n" +
-    "		<form class=\"col-md-6\">\n" +
-    "			<fieldset ng-if=\"ctrl.mustShip()\">\n" +
-    "				<legend>Shipping Address</legend>\n" +
-    "\n" +
-    "				<div class=\"form-group\">\n" +
-    "					<label class=\"col-sm-2 control-label\" for=\"textinput\">Line 1</label>\n" +
-    "					<div class=\"col-sm-10\">\n" +
-    "					  	<input type=\"text\" placeholder=\"Address Line 1\" class=\"form-control\">\n" +
+    "					<div class=\"form-group\">\n" +
+    "						<label class=\"col-sm-2 control-label\" for=\"textinput\">Country</label>\n" +
+    "						<div class=\"col-sm-10\">\n" +
+    "						  	<input type=\"text\" placeholder=\"Country\" class=\"form-control\">\n" +
+    "						</div>\n" +
     "					</div>\n" +
-    "				</div>\n" +
-    "\n" +
-    "				<div class=\"form-group\">\n" +
-    "					<label class=\"col-sm-2 control-label\" for=\"textinput\">Line 2</label>\n" +
-    "					<div class=\"col-sm-10\">\n" +
-    "					  	<input type=\"text\" placeholder=\"Address Line 2\" class=\"form-control\">\n" +
-    "					</div>\n" +
-    "				</div>\n" +
-    "\n" +
-    "				<div class=\"form-group\">\n" +
-    "					<label class=\"col-sm-2 control-label\" for=\"textinput\">City</label>\n" +
-    "					<div class=\"col-sm-10\">\n" +
-    "					  	<input type=\"text\" placeholder=\"City\" class=\"form-control\">\n" +
-    "					</div>\n" +
-    "				</div>\n" +
-    "\n" +
-    "				<div class=\"form-group\">\n" +
-    "					<label class=\"col-sm-2 control-label\" for=\"textinput\">Country</label>\n" +
-    "					<div class=\"col-sm-10\">\n" +
-    "					  	<input type=\"text\" placeholder=\"Country\" class=\"form-control\">\n" +
-    "					</div>\n" +
-    "				</div>\n" +
-    "	        </fieldset>\n" +
-    "\n" +
-    "	        <fieldset ng-if=\"!ctrl.mustShip()\">\n" +
-    "				<legend>Send To</legend>\n" +
-    "\n" +
-    "				<div class=\"form-group col-md-12\">\n" +
-    "					<label for=\"email\">Email</label>\n" +
-    "					<input id=\"email\" type=\"email\" placeholder=\"Email\" class=\"form-control\" ng-model=\"ctrl.email\">\n" +
-    "				</div>\n" +
-    "\n" +
-    "				<div class=\"form-group col-md-12\">\n" +
-    "					<label for=\"email-confirm\">Confirm Email</label>\n" +
-    "					<input id=\"email-confirm\" type=\"email\" placeholder=\"Confirm Email\" class=\"form-control\" ng-model=\"ctrl.emailConfirm\">\n" +
-    "				</div>\n" +
-    "	        </fieldset>\n" +
+    "		        </div>\n" +
+    "		    </fieldset>\n" +
     "    	</form>\n" +
     "	</div>\n" +
     "</div>\n"
+  );
+
+
+  $templateCache.put('js/components/payment/stripePayment/stripePayment.html',
+    "<form name=\"ctrl.paymentForm\" class=\"stripe-payment\" novalidate>\n" +
+    "	<div class=\"row\">\n" +
+    "		<div class=\"form-group col-md-12\">\n" +
+    "			<label>Name On Card</label>\n" +
+    "			<input name=\"cardName\"\n" +
+    "				   type=\"text\"\n" +
+    "				   ng-model=\"ctrl.card.name\"\n" +
+    "				   class=\"form-control\"\n" +
+    "				   ng-required=\"true\">\n" +
+    "		</div>\n" +
+    "\n" +
+    "		<div class=\"form-group col-md-9\" ng-class=\"ctrl.inputClass('cardNumber')\">\n" +
+    "			<label>Card Number</label>\n" +
+    "			<div class=\"input-group\">\n" +
+    "				<span class=\"input-group-addon brand\" id=\"credit-card-type\">\n" +
+    "					<i class=\"pf\" id=\"brand-icon\" ng-class=\"ctrl.getPfClass(ctrl.paymentForm.cardNumber.$ccEagerType)\"></i>\n" +
+    "				</span>\n" +
+    "				<input cc-number cc-eager-type cc-format cc-type=\"ctrl.paymentForm.cardNumber.$ccEagerType\"\n" +
+    "					   type=\"text\"\n" +
+    "					   name=\"cardNumber\"\n" +
+    "					   ng-model=\"ctrl.card.number\"\n" +
+    "					   class=\"form-control\"\n" +
+    "					   ng-required=\"true\">\n" +
+    "			</div>\n" +
+    "		</div>\n" +
+    "\n" +
+    "		<div class=\"form-group col-md-3\" ng-class=\"ctrl.inputClass('cardCvc')\">\n" +
+    "			<label>CVC</label>\n" +
+    "			<input cc-cvc cc-format cc-type=\"ctrl.paymentForm.cardNumber.$ccEagerType\"\n" +
+    "				   name=\"cardCvc\"\n" +
+    "				   type=\"text\"\n" +
+    "				   ng-model=\"ctrl.card.cvc\"\n" +
+    "				   class=\"form-control\"\n" +
+    "				   ng-required=\"true\">\n" +
+    "		</div>\n" +
+    "\n" +
+    "		<div class=\"form-group col-md-6\" cc-exp>\n" +
+    "			<label>Expiration Date</label>\n" +
+    "			<div class=\"row\">\n" +
+    "				<div class=\"col-md-5\">\n" +
+    "					<input cc-exp-month cc-format\n" +
+    "						   type=\"text\"\n" +
+    "						   placeholder=\"MM\"\n" +
+    "					       name=\"cardExpMonth\"\n" +
+    "						   ng-model=\"ctrl.card.exp_month\"\n" +
+    "						   class=\"form-control\"\n" +
+    "						   ng-required=\"true\">\n" +
+    "				</div>\n" +
+    "\n" +
+    "				<div class=\"col-md-5\">\n" +
+    "					<input cc-exp-year cc-format\n" +
+    "						   type=\"text\"\n" +
+    "						   placeholder=\"YY\"\n" +
+    "						   name=\"cardExpYear\"\n" +
+    "						   ng-model=\"ctrl.card.exp_year\"\n" +
+    "						   class=\"form-control\"\n" +
+    "						   ng-required=\"true\">\n" +
+    "				</div>\n" +
+    "			</div>\n" +
+    "		</div>\n" +
+    "\n" +
+    "		<div class=\"form-group col-md-6\">\n" +
+    "			<label>Zip Code</label>\n" +
+    "			<input name=\"cardAddressZip\"\n" +
+    "				   type=\"text\"\n" +
+    "				   ng-model=\"ctrl.card.address_zip\"\n" +
+    "				   ng-pattern=\"/\\d{5}(?:[-\\s]\\d{4})?/\"\n" +
+    "				   maxlength=\"{{ctrl.zipLength}}\"\n" +
+    "				   class=\"form-control\"\n" +
+    "				   ng-required=\"true\">\n" +
+    "		</div>\n" +
+    "	</div>\n" +
+    "</form>\n"
   );
 
 
@@ -441,7 +482,8 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "		  	<div class=\"col-md-12\">\n" +
     "		  		<make-payment must-ship=\"ctrl.mustShip()\"\n" +
     "		  					  total-price=\"ctrl.finalPrice\"\n" +
-    "		  					  stripe-charge=\"ctrl.checkout\">\n" +
+    "		  					  finalize-checkout=\"ctrl.finalizeCheckout\"\n" +
+    "		  					  can-create-token=\"ctrl.canCreateToken\">\n" +
     "		  		</make-payment>\n" +
     "		  	</div>\n" +
     "		</div>\n" +
@@ -449,7 +491,7 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "\n" +
     "	<div class=\"modal-footer\">\n" +
     "		<button class=\"btn btn-primary\" type=\"button\" ng-click=\"ctrl.goToPreviousPage()\">Back</button>\n" +
-    "	    <button class=\"btn btn-primary\" type=\"button\" ng-click=\"ctrl.payAndContinue()\" ng-disabled=\"!ctrl.canContinueWithPayment\">Review Order</button>\n" +
+    "	    <button class=\"btn btn-primary\" type=\"button\" ng-click=\"ctrl.payAndContinue()\">Review Order</button>\n" +
     "	</div>\n" +
     "</div>"
   );

@@ -4,7 +4,7 @@ angular.module('app').directive('finalizeModal', [finalizeModal]);
 
 function FinalizeModalCtrl($scope, $timeout, $http, $colorThief, PEYOTE_VALUES) {
   var ctrl = this;
-  var finalCroppedData;
+  var finalCroppedUrl;
 
   ctrl.$onInit = function() {
     ctrl.modalPages = {
@@ -35,12 +35,6 @@ function FinalizeModalCtrl($scope, $timeout, $http, $colorThief, PEYOTE_VALUES) 
     ctrl.currentPage = ctrl.modalPages.uploadImage;
     ctrl.colorCount = 12;
     ctrl.orderReviewPixelizerId = 'review-order-preview';
-
-    $scope.$on('can-continue-with-payment', function(event, validPayment) {
-      $timeout(function() {
-        ctrl.canContinueWithPayment = validPayment;
-      });
-    });
   };
 
   ctrl.goToNextPage = function() {
@@ -73,9 +67,10 @@ function FinalizeModalCtrl($scope, $timeout, $http, $colorThief, PEYOTE_VALUES) 
 
     ctrl.getCroppedData()
     .then(function(croppedData) {
-      finalCroppedData = angular.copy(croppedData);
-
       var previewUrl = croppedData.toDataURL();
+
+      finalCroppedUrl = angular.copy(previewUrl);
+
       var previewData = {rows: ctrl.selectedHeight, columns: ctrl.selectedWidth};
       var palette = $colorThief.getPalette(croppedData, ctrl.colorCount);
 
@@ -97,7 +92,7 @@ function FinalizeModalCtrl($scope, $timeout, $http, $colorThief, PEYOTE_VALUES) 
       includeClasps: ctrl.includeClasps
     };
 
-    return ctrl.checkout(finalCroppedData, finalSpecs)
+    return ctrl.finalizeCheckout(finalCroppedUrl, finalSpecs)
     .then(function(res) {
       console.log(res);
       

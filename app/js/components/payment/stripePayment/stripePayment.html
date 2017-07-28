@@ -1,0 +1,73 @@
+<form name="ctrl.paymentForm" class="stripe-payment" novalidate>
+	<div class="row">
+		<div class="form-group col-md-12">
+			<label>Name On Card</label>
+			<input name="cardName"
+				   type="text"
+				   ng-model="ctrl.card.name"
+				   class="form-control"
+				   ng-required="true">
+		</div>
+
+		<div class="form-group col-md-9" ng-class="ctrl.inputClass('cardNumber')">
+			<label>Card Number</label>
+			<div class="input-group">
+				<span class="input-group-addon brand" id="credit-card-type">
+					<i class="pf" id="brand-icon" ng-class="ctrl.getPfClass(ctrl.paymentForm.cardNumber.$ccEagerType)"></i>
+				</span>
+				<input cc-number cc-eager-type cc-format cc-type="ctrl.paymentForm.cardNumber.$ccEagerType"
+					   type="text"
+					   name="cardNumber"
+					   ng-model="ctrl.card.number"
+					   class="form-control"
+					   ng-required="true">
+			</div>
+		</div>
+
+		<div class="form-group col-md-3" ng-class="ctrl.inputClass('cardCvc')">
+			<label>CVC</label>
+			<input cc-cvc cc-format cc-type="ctrl.paymentForm.cardNumber.$ccEagerType"
+				   name="cardCvc"
+				   type="text"
+				   ng-model="ctrl.card.cvc"
+				   class="form-control"
+				   ng-required="true">
+		</div>
+
+		<div class="form-group col-md-6" cc-exp>
+			<label>Expiration Date</label>
+			<div class="row">
+				<div class="col-md-5">
+					<input cc-exp-month cc-format
+						   type="text"
+						   placeholder="MM"
+					       name="cardExpMonth"
+						   ng-model="ctrl.card.exp_month"
+						   class="form-control"
+						   ng-required="true">
+				</div>
+
+				<div class="col-md-5">
+					<input cc-exp-year cc-format
+						   type="text"
+						   placeholder="YY"
+						   name="cardExpYear"
+						   ng-model="ctrl.card.exp_year"
+						   class="form-control"
+						   ng-required="true">
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group col-md-6">
+			<label>Zip Code</label>
+			<input name="cardAddressZip"
+				   type="text"
+				   ng-model="ctrl.card.address_zip"
+				   ng-pattern="/\d{5}(?:[-\s]\d{4})?/"
+				   maxlength="{{ctrl.zipLength}}"
+				   class="form-control"
+				   ng-required="true">
+		</div>
+	</div>
+</form>

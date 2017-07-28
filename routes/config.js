@@ -1,9 +1,13 @@
 var express = require('express');
+
 var router = express.Router();
 
-/* GET users listing. */
+var configVariables = {
+  stripePubKey: process.env.STRIPE_PUBLISHABLE_KEY
+};
+
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  res.json(configVariables);
 });
 
 module.exports = router;

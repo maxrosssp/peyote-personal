@@ -9,5 +9,6 @@ angular.module('app', [
   'ngProgress',
   'ngCropper',
   'ngColorThief',
-  'angular-stripe'
+  'angular-stripe',
+  'credit-cards'
 ]);

@@ -11,98 +11,62 @@
 	</div>
 
 	<div class="row make-payment">
-		<form class="col-md-6">
+		<div class="col-md-6">
 			<legend>Payment Info</legend>
 
-			<fieldset class="well">
-				<div class="form-group">
-					<label for="cardholder-name">Name On Card</label>
-					<input id="cardholder-name" 
-						   ng-model="ctrl.cardholderName" 
-						   class="field form-control"
-						   ng-change="ctrl.canContinue()">
-				</div>
+			<div class="well">
+				<stripe-payment get-token="ctrl.getToken" can-create-token="ctrl.canCreateToken"></stripe-payment>
+			</div>
+		</div>
+
+		<form name="cardholderInfo" class="col-md-6">
+			<fieldset>
+				<legend>Send To</legend>
 
 				<div class="row">
-					<div class="form-group col-md-9">
-						<label for="card-number">Card Number</label>
-						<div class="input-group">
-							<span class="input-group-addon brand" id="credit-card-type"><i class="pf pf-credit-card" id="brand-icon"></i></span>
-							<div id="card-number" class="field" aria-describedby="credit-card-type"></div>
+					<div class="form-group col-md-12">
+						<label for="email">Email</label>
+						<input id="email" type="email" placeholder="Email" class="form-control" ng-model="ctrl.email">
+					</div>
+
+					<div class="form-group col-md-12">
+						<label for="email-confirm">Confirm Email</label>
+						<input id="email-confirm" type="email" placeholder="Confirm Email" class="form-control" ng-model="ctrl.emailConfirm">
+					</div>
+				</div>
+
+				<div class="row" ng-if="ctrl.mustShip()">
+					<legend>Shipping Address</legend>
+
+					<div class="form-group col-md-12">
+						<label class="col-sm-2 control-label" for="textinput">Line 1</label>
+						<div class="col-sm-10">
+						  	<input type="text" placeholder="Address Line 1" class="form-control">
 						</div>
 					</div>
 
-					<div class="form-group col-md-3">
-						<label for="card-cvc">CVC</label>
-						<div id="card-cvc" class="field"></div>
-					</div>
-				</div>
-
-				<div class="row">
-					<div class="form-group col-md-5">
-						<label for="card-expiry">Expiration Date</label>
-						<div id="card-expiry" class="field"></div>
+					<div class="form-group col-md-12">
+						<label class="col-sm-2 control-label" for="textinput">Line 2</label>
+						<div class="col-sm-10">
+						  	<input type="text" placeholder="Address Line 2" class="form-control">
+						</div>
 					</div>
 
-					<div class="form-group col-md-7">
-						<label for="card-zip-code">Zip Code</label>
-						<input id="card-zip-code" 
-							   type="text" 
-							   ng-model="ctrl.zipCode" 
-							   maxlength="{{ctrl.zipCodeLength}}" 
-							   class="form-control" 
-							   ng-change="ctrl.canContinue()">
+					<div class="form-group col-md-12">
+						<label class="col-sm-2 control-label" for="textinput">City</label>
+						<div class="col-sm-10">
+						  	<input type="text" placeholder="City" class="form-control">
+						</div>
 					</div>
-				</div>
-			</fieldset>
-		</form>
 
-		<form class="col-md-6">
-			<fieldset ng-if="ctrl.mustShip()">
-				<legend>Shipping Address</legend>
-
-				<div class="form-group">
-					<label class="col-sm-2 control-label" for="textinput">Line 1</label>
-					<div class="col-sm-10">
-					  	<input type="text" placeholder="Address Line 1" class="form-control">
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="textinput">Country</label>
+						<div class="col-sm-10">
+						  	<input type="text" placeholder="Country" class="form-control">
+						</div>
 					</div>
-				</div>
-
-				<div class="form-group">
-					<label class="col-sm-2 control-label" for="textinput">Line 2</label>
-					<div class="col-sm-10">
-					  	<input type="text" placeholder="Address Line 2" class="form-control">
-					</div>
-				</div>
-
-				<div class="form-group">
-					<label class="col-sm-2 control-label" for="textinput">City</label>
-					<div class="col-sm-10">
-					  	<input type="text" placeholder="City" class="form-control">
-					</div>
-				</div>
-
-				<div class="form-group">
-					<label class="col-sm-2 control-label" for="textinput">Country</label>
-					<div class="col-sm-10">
-					  	<input type="text" placeholder="Country" class="form-control">
-					</div>
-				</div>
-	        </fieldset>
-
-	        <fieldset ng-if="!ctrl.mustShip()">
-				<legend>Send To</legend>
-
-				<div class="form-group col-md-12">
-					<label for="email">Email</label>
-					<input id="email" type="email" placeholder="Email" class="form-control" ng-model="ctrl.email">
-				</div>
-
-				<div class="form-group col-md-12">
-					<label for="email-confirm">Confirm Email</label>
-					<input id="email-confirm" type="email" placeholder="Confirm Email" class="form-control" ng-model="ctrl.emailConfirm">
-				</div>
-	        </fieldset>
+		        </div>
+		    </fieldset>
     	</form>
 	</div>
 </div>

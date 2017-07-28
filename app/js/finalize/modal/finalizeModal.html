@@ -72,7 +72,8 @@
 		  	<div class="col-md-12">
 		  		<make-payment must-ship="ctrl.mustShip()"
 		  					  total-price="ctrl.finalPrice"
-		  					  stripe-charge="ctrl.checkout">
+		  					  finalize-checkout="ctrl.finalizeCheckout"
+		  					  can-create-token="ctrl.canCreateToken">
 		  		</make-payment>
 		  	</div>
 		</div>
@@ -80,6 +81,6 @@
 
 	<div class="modal-footer">
 		<button class="btn btn-primary" type="button" ng-click="ctrl.goToPreviousPage()">Back</button>
-	    <button class="btn btn-primary" type="button" ng-click="ctrl.payAndContinue()" ng-disabled="!ctrl.canContinueWithPayment">Review Order</button>
+	    <button class="btn btn-primary" type="button" ng-click="ctrl.payAndContinue()">Review Order</button>
 	</div>
 </div>

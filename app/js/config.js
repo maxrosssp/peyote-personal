@@ -1,14 +1,10 @@
-angular.module('app').config(['$locationProvider', '$routeProvider', '$qProvider', 'STRIPE', Config]);
+angular.module('app').config(['$locationProvider', '$routeProvider', '$qProvider', 'stripeProvider', Config])
 
-function Config($locationProvider, $routeProvider, $qProvider, STRIPE) {
-  $locationProvider.hashPrefix('!');
-  $locationProvider.html5Mode({
-    enabled: false,
-    requireBase: false
-  });
+function Config($locationProvider, $routeProvider, $qProvider, stripeProvider) {
+  $locationProvider.html5Mode({enabled: true, requireBase: false}).hashPrefix('!');
 
   $routeProvider
-  .when('/home', {
+  .when('/', {
     templateUrl: 'js/views/home.html'
   })
   .when('/about', {
@@ -20,10 +16,10 @@ function Config($locationProvider, $routeProvider, $qProvider, STRIPE) {
   .when('/contact', {
     templateUrl: 'js/views/contact.html'
   });
-
-  $routeProvider.otherwise({redirectTo: '/home'});
+  $routeProvider.otherwise({redirectTo: '/'});
 
   $qProvider.errorOnUnhandledRejections(false);
 
-  // $window.Stripe.setPublishableKey(STRIPE.publishableKey);
+  // stripeProvider.url = 'https://js.stripe.com/v3/';
+  stripeProvider.setPublishableKey('pk_test_8lpNNwFVokUif3qxk2N7fPd6');
 }
