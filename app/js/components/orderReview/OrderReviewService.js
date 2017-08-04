@@ -41,7 +41,7 @@ function OrderReviewService(PEYOTE_VALUES, PEYOTE_PRICES) {
   var shippingAndTaxCost = function(subtotal, mustShip) {
     var tax = subtotal * PEYOTE_PRICES.salesTax;
 
-    return tax + mustShip ? PEYOTE_PRICES.priceToShip : 0;
+    return tax + (mustShip ? PEYOTE_PRICES.priceToShip : 0);
   };
 
 	return {

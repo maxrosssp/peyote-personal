@@ -7,7 +7,7 @@
 	<div class="modal-body">
 		<div class="row upload-image">
 		  	<div class="col-md-12">
-		  		<file-upload label="'Upload Image'" on-upload="ctrl.onFile"></file-upload>
+		  		<file-upload file-label="'From File'" link-label="'From URL'" on-upload="ctrl.onFile"></file-upload>
 		  	</div>
 		</div>
 	</div>
@@ -21,7 +21,8 @@
 	<div class="modal-body">
 		<div class="row crop-image">
 			<div class="col-md-12">
-				<peyote-crop blob="ctrl.blob"
+				<peyote-crop uploaded-file="ctrl.uploadedFile"
+							 downloaded-url="ctrl.downloadedUrl"
 							 bead-height="ctrl.selectedHeight"
 							 bead-width="ctrl.selectedWidth"
 							 get-cropped-data="ctrl.getCroppedData"

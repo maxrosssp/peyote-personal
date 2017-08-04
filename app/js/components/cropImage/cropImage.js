@@ -4,7 +4,7 @@ angular.module('app').directive('peyoteCrop', [cropImage]);
 
 function CropImageCtrl($scope, $q, $http, $timeout, Cropper, PEYOTE_VALUES, CropImageService, $colorThief) {
   var ctrl = this;
-  var file, data, showCropper, hideCropper, containerData, croppedData;
+  var data, showCropper, hideCropper, containerData, croppedData;
   var rotation = 0;
 
   ctrl.$onInit = function() {
@@ -48,26 +48,33 @@ function CropImageCtrl($scope, $q, $http, $timeout, Cropper, PEYOTE_VALUES, Crop
   };
 
   ctrl.$onChanges = function(changesObj) {
-    if (changesObj.blob && changesObj.blob.currentValue) {
-      Cropper.encode((file = changesObj.blob.currentValue))
+    if (changesObj.uploadedFile && changesObj.uploadedFile.currentValue) {
+      Cropper.encode(changesObj.uploadedFile.currentValue)
       .then(function(dataUrl) {
         ctrl.cropper.callMethod('replace', dataUrl);
 
-        $timeout(function() {
-          ctrl.cropper.callMethod('setDragMode', 'move');
-          containerData = ctrl.cropper.callMethod('getContainerData');
-
-          ctrl.cropper.callMethod('setCanvasData', {
-            top: 0,
-            height: containerData.height
-          });
-
-          ctrl.showEditButtons = true;
-
-          ctrl.updatePreview();
-        });
+        $timeout(updateUploadedImage);
       });
+    } else if (changesObj.downloadedUrl && changesObj.downloadedUrl.currentValue) {
+      ctrl.cropper.callMethod('replace', changesObj.downloadedUrl.currentValue);
+
+      $timeout(updateUploadedImage);
     }
+  };
+
+  var updateUploadedImage = function() {
+    ctrl.cropper.callMethod('setDragMode', 'move');
+
+    containerData = ctrl.cropper.callMethod('getContainerData');
+
+    ctrl.cropper.callMethod('setCanvasData', {
+      top: 0,
+      height: containerData.height
+    });
+
+    ctrl.showEditButtons = true;
+
+    ctrl.updatePreview();
   };
 
   var setupContainer = function() {
@@ -116,7 +123,7 @@ function CropImageCtrl($scope, $q, $http, $timeout, Cropper, PEYOTE_VALUES, Crop
   };
 
   var cropData = function(height, width) {
-    if (!file || !data) return $q.reject();
+    if (!data) return $q.reject();
 
     return $q.resolve(ctrl.cropper.callMethod('getCroppedCanvas'))
     .then(function(imgData) {
@@ -145,7 +152,8 @@ function cropImage() {
     require: '^^finalizeModal',
     scope: {},
     bindToController: {
-      blob: '<',
+      uploadedFile: '<',
+      downloadedUrl: '<',
       selectedHeight: '=beadHeight',
       selectedWidth: '=beadWidth',
       colorCount: '=',

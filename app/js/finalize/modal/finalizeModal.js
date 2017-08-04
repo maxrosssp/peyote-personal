@@ -45,20 +45,22 @@ function FinalizeModalCtrl($scope, $timeout, $http, $colorThief, PEYOTE_VALUES) 
     ctrl.currentPage = ctrl.modalPages[ctrl.currentPage.back];
   };
 
-  ctrl.onFile = function(blob) {
-    ctrl.blob = blob;
-
+  ctrl.onFile = function(file) {
     $timeout(function() {
-      ctrl.blob = blob;
+      ctrl.uploadedFile = file;
+      ctrl.goToNextPage();
+    });
+  };
 
+  ctrl.onLink = function(dataUrl) {
+    $timeout(function() {
+      ctrl.downloadedUrl = dataUrl;
       ctrl.goToNextPage();
     });
   };
 
   ctrl.imageUploaded = function() {
-    if (ctrl.currentPage.id === 'uploadImage') {
-      return angular.isDefined(ctrl.blob);
-    }
+    return angular.isDefined(ctrl.uploadedFile) || angular.isDefined(ctrl.downloadedUrl);
   };
 
   ctrl.cropAndContinue = function() {

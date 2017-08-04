@@ -1,7 +1,11 @@
-.file-upload input[type=file] {
-  height: 350px;
+.file-upload .file-input input[type=file] {
+  height: 200px;
   background: white url("../images/choose_file.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: 50%;
+}
+
+.file-upload .link-input {
+  height: 90px;
 }

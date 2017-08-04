@@ -8,7 +8,7 @@ function FinalizeService($http) {
   var stripeCheckout = function(imageUrl, specs, token) {
     return $http({
       method: 'POST',
-      url: '/upload',
+      url: '/checkout',
       data: {
         url: imageUrl,
         specs: specs,

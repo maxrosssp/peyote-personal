@@ -1,4 +1,35 @@
-<div class="file-upload form-group">
-	<label for="fileInput">{{label || 'Select Image'}}</label>
-	<input type="file" class="form-control" id="fileInput" onchange="angular.element(this).scope().onUpload(this.files[0])">
+<form name="ctrl.uploadForm" class="file-upload">
+	<div class="file-input form-group col-md-12">
+		<label for="fileInput">{{ctrl.fileLabel || 'Select Image'}}</label>
+
+		<input type="file" 
+			   class="form-control" 
+			   id="fileInput" 
+			   name="fileInput" 
+			   onchange="angular.element(this).scope().onUpload(this.files[0])">
+	</div>
+
+	<div class="col-md-12" style="text-align:center">
+		<h3>or</h3>
+	</div>
+
+	<div class="link-input form-group col-md-12" ng-class="{'has-error': ctrl.linkError}">
+		<label for="linkInput">{{ctrl.linkLabel || 'From URL'}}</label>
+
+		<div class="input-group">
+	      <input type="text" 
+	      		 class="form-control" 
+	      		 name="linkInput" 
+	      		 placeholder="http://www..." 
+	      		 ng-model="ctrl.inputLink" 
+	      		 ng-change="ctrl.updateLink()" 
+	      		 aria-describedby="linkErrorMessage">
+
+	      <span class="input-group-btn">
+	        <button class="btn btn-default" type="button" ng-click="ctrl.checkLink(ctrl.inputLink)">Upload</button>
+	      </span>
+	    </div>
+
+	    <span ng-if="ctrl.linkError" id="linkErrorMessage" class="help-block">{{ctrl.linkErrorMessage}}</span>
+	</div>
 </div>

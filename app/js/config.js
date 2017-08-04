@@ -1,6 +1,6 @@
-angular.module('app').config(['$locationProvider', '$routeProvider', '$qProvider', 'stripeProvider', Config])
+angular.module('app').config(['$locationProvider', '$routeProvider', '$qProvider', 'stripeProvider', '$httpProvider', Config])
 
-function Config($locationProvider, $routeProvider, $qProvider, stripeProvider) {
+function Config($locationProvider, $routeProvider, $qProvider, stripeProvider, $httpProvider) {
   $locationProvider.html5Mode({enabled: true, requireBase: false}).hashPrefix('!');
 
   $routeProvider
@@ -20,6 +20,7 @@ function Config($locationProvider, $routeProvider, $qProvider, stripeProvider) {
 
   $qProvider.errorOnUnhandledRejections(false);
 
-  // stripeProvider.url = 'https://js.stripe.com/v3/';
   stripeProvider.setPublishableKey('pk_test_8lpNNwFVokUif3qxk2N7fPd6');
+
+  $httpProvider.defaults.useXDomain = true;
 }

@@ -102,9 +102,40 @@ angular.module('app').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('js/components/fileUpload/fileUpload.html',
-    "<div class=\"file-upload form-group\">\n" +
-    "	<label for=\"fileInput\">{{label || 'Select Image'}}</label>\n" +
-    "	<input type=\"file\" class=\"form-control\" id=\"fileInput\" onchange=\"angular.element(this).scope().onUpload(this.files[0])\">\n" +
+    "<form name=\"ctrl.uploadForm\" class=\"file-upload\">\n" +
+    "	<div class=\"file-input form-group col-md-12\">\n" +
+    "		<label for=\"fileInput\">{{ctrl.fileLabel || 'Select Image'}}</label>\n" +
+    "\n" +
+    "		<input type=\"file\" \n" +
+    "			   class=\"form-control\" \n" +
+    "			   id=\"fileInput\" \n" +
+    "			   name=\"fileInput\" \n" +
+    "			   onchange=\"angular.element(this).scope().onUpload(this.files[0])\">\n" +
+    "	</div>\n" +
+    "\n" +
+    "	<div class=\"col-md-12\" style=\"text-align:center\">\n" +
+    "		<h3>or</h3>\n" +
+    "	</div>\n" +
+    "\n" +
+    "	<div class=\"link-input form-group col-md-12\" ng-class=\"{'has-error': ctrl.linkError}\">\n" +
+    "		<label for=\"linkInput\">{{ctrl.linkLabel || 'From URL'}}</label>\n" +
+    "\n" +
+    "		<div class=\"input-group\">\n" +
+    "	      <input type=\"text\" \n" +
+    "	      		 class=\"form-control\" \n" +
+    "	      		 name=\"linkInput\" \n" +
+    "	      		 placeholder=\"http://www...\" \n" +
+    "	      		 ng-model=\"ctrl.inputLink\" \n" +
+    "	      		 ng-change=\"ctrl.updateLink()\" \n" +
+    "	      		 aria-describedby=\"linkErrorMessage\">\n" +
+    "\n" +
+    "	      <span class=\"input-group-btn\">\n" +
+    "	        <button class=\"btn btn-default\" type=\"button\" ng-click=\"ctrl.checkLink(ctrl.inputLink)\">Upload</button>\n" +
+    "	      </span>\n" +
+    "	    </div>\n" +
+    "\n" +
+    "	    <span ng-if=\"ctrl.linkError\" id=\"linkErrorMessage\" class=\"help-block\">{{ctrl.linkErrorMessage}}</span>\n" +
+    "	</div>\n" +
     "</div>"
   );
 
@@ -417,7 +448,7 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "	<div class=\"modal-body\">\n" +
     "		<div class=\"row upload-image\">\n" +
     "		  	<div class=\"col-md-12\">\n" +
-    "		  		<file-upload label=\"'Upload Image'\" on-upload=\"ctrl.onFile\"></file-upload>\n" +
+    "		  		<file-upload file-label=\"'From File'\" link-label=\"'From URL'\" on-upload=\"ctrl.onFile\"></file-upload>\n" +
     "		  	</div>\n" +
     "		</div>\n" +
     "	</div>\n" +
@@ -431,7 +462,8 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "	<div class=\"modal-body\">\n" +
     "		<div class=\"row crop-image\">\n" +
     "			<div class=\"col-md-12\">\n" +
-    "				<peyote-crop blob=\"ctrl.blob\"\n" +
+    "				<peyote-crop uploaded-file=\"ctrl.uploadedFile\"\n" +
+    "							 downloaded-url=\"ctrl.downloadedUrl\"\n" +
     "							 bead-height=\"ctrl.selectedHeight\"\n" +
     "							 bead-width=\"ctrl.selectedWidth\"\n" +
     "							 get-cropped-data=\"ctrl.getCroppedData\"\n" +
