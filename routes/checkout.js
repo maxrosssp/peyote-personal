@@ -96,7 +96,7 @@ router.post('/', function(req, res, next) {
 
     console.log(image);
 
-    image.write('./test/output/build_1.jpg');
+    image.write('./test/build_1.jpg');
   })
   .catch(function(err) {
     console.log('6 bad');
