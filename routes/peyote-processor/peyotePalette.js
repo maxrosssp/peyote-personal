@@ -1,4 +1,5 @@
 var Jimp = require('./extendedJimp');
+var CONFIG = require('./templateConfig');
 
 var getClosestColor = function(matchColor, colorList) {
   if (colorList === null || colorList.length < 1 || !matchColor) {
@@ -15,12 +16,19 @@ var getClosestColor = function(matchColor, colorList) {
     return distFunc(c1) - distFunc(c2);
   });
 
-  return colorList[0];
+  return {
+    color: colorList[0],
+    remainingColors: colorList.slice(1)
+  };
 }
 
 var getClosestPalette = function(palette, colorOptions) {
   return palette.map(function(color) {
-    return getClosestColor(color, colorOptions);
+    var closest = getClosestColor(color, colorOptions);
+
+    colorOptions = closest.remainingColors;
+
+    return closest.color;
   });
 };
 
@@ -33,15 +41,20 @@ var rgbToHex = function(r, g, b) {
   return componentToHex(r) + componentToHex(g) + componentToHex(b);
 };
 
-function hexToRgb(hex) {
+var hexToRgb = function(hex) {
   var result = Jimp.intToRGBA(hex);
 
   return [result.r, result.g, result.b];
+};
+
+var rgbToDelica = function(color) {
+  return CONFIG.colors.hexToDelica['#' + rgbToHex(color.r, color.g, color.b)];
 };
 
 module.exports = {
   getClosestColor: getClosestColor,
   getClosestPalette: getClosestPalette,
   rgbToHex: rgbToHex,
-  hexToRgb: hexToRgb
+  hexToRgb: hexToRgb,
+  rgbToDelica: rgbToDelica
 };

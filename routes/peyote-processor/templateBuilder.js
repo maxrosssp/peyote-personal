@@ -1,5 +1,8 @@
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
+// var async = require('asyncawait/async');
+// var await = require('asyncawait/await');
+
+var async = require('async');
+// var await = require('await');
 
 var Jimp = require('./extendedJimp');
 var ColorThief = require('color-thief-jimp');
@@ -14,13 +17,13 @@ var GRID_FRAGMENTS = CONFIG.gridFragments;
 
 var TEMPLATE_BEAD_SIZE;
 
-var getDelicaPalette = async (function(image, colorCount) {
+var getDelicaPalette = async function(image, colorCount) {
   var palette = await (ColorThief.getPalette(image, colorCount));
 
   return PeyotePalette.getClosestPalette(palette, CONFIG.colors.options);
-});
+};
 
-var peyotePixelateImage = async (function(image, palette, beadsPerColumnGroup) {
+var peyotePixelateImage = async function(image, palette, beadsPerColumnGroup) {
   var beadSpecs = image.getBeadSpecs(TEMPLATE_BEAD_SIZE);
 
   var columnGroupWidth = beadSpecs.width * beadsPerColumnGroup;
@@ -40,9 +43,9 @@ var peyotePixelateImage = async (function(image, palette, beadsPerColumnGroup) {
   return await (columnGroups.reduce(function(image, columnGroup, index) {
     return image.composite(columnGroup, index * columnGroupWidth, (index % 2 === 0) ? 0 : (beadSpecs.height / 2));
   }, blankImage));
-});
+};
 
-var numberColumnGroup = async (function(columnGroup, colorMap, beadSpecs, beadsPerColumnGroup) {
+var numberColumnGroup = async function(columnGroup, colorMap, beadSpecs, beadsPerColumnGroup) {
   var blankImage = await (new Jimp(columnGroup.bitmap.width, columnGroup.bitmap.height));
 
   var x, y;
@@ -62,19 +65,39 @@ var numberColumnGroup = async (function(columnGroup, colorMap, beadSpecs, beadsP
         var nextNumberImage = await (Jimp.read('./routes/peyote-processor/assets/numbers/' + nextNum + '.png'));
         nextNumberImage = await (nextNumberImage.resize(beadSpecs.width, beadSpecs.height));
 
-        colorMap[pixelColor] = nextNumberImage;
+        colorMap[pixelColor] = {
+          number: nextNum,
+          count: 0,
+          image: nextNumberImage
+        };
       }
 
-      await (blankImage.composite(colorMap[pixelColor], x, y));
+      colorMap[pixelColor].count += 1;
+
+      await (blankImage.composite(colorMap[pixelColor].image, x, y));
     }
   }
 
   await (columnGroup.composite(blankImage, 0, 0));
 
   return colorMap;
-});
+};
 
-var numberImage = async (function(image, palette, beadsPerColumnGroup) {
+var translateColorMap = function(colorMap) {
+  return Object.keys(colorMap).reduce(function(translatedMap, key) {
+    var colorRgba = Jimp.intToRGBA(parseInt(key)); 
+
+    translatedMap[colorMap[key].number] = {
+      delicaId: PeyotePalette.rgbToDelica(colorRgba),
+      hex: '#' + PeyotePalette.rgbToHex(colorRgba.r, colorRgba.g, colorRgba.b),
+      count: colorMap[key].count
+    };
+
+    return translatedMap;
+  }, {});
+};
+
+var numberImage = async function(image, palette, beadsPerColumnGroup) {
   var numberedImage = await (image.clone().peyoteAbsoluteScale(4, TEMPLATE_BEAD_SIZE));
 
   var beadSpecs = numberedImage.getBeadSpecs(TEMPLATE_BEAD_SIZE);
@@ -98,10 +121,13 @@ var numberImage = async (function(image, palette, beadsPerColumnGroup) {
     return image.composite(columnGroup, index * columnGroupWidth, (index % 2 === 0) ? 0 : (beadSpecs.height / 2));
   }, numberedImage));
 
-  return numberedImage;
-});
+  return {
+    image: numberedImage,
+    colorMap: translateColorMap(colorMap)
+  };
+};
 
-var addGrid = async (function(image, beadsPerColumnGroup) {
+var addGrid = async function(image, beadsPerColumnGroup) {
   var beadSpecs = image.getBeadSpecs(TEMPLATE_BEAD_SIZE);
 
   var gridFragmentSpecs = GRID_FRAGMENTS[beadsPerColumnGroup];
@@ -125,21 +151,29 @@ var addGrid = async (function(image, beadsPerColumnGroup) {
   await (image.composite(gridFull, 0, 0));
 
   return image;
-});
+};
 
-var build = async (function(imageSrc, colorCount, beadsPerColumnGroup) {
+var build = async function(imageSrc, specs, beadsPerColumnGroup) {
   var image = await (Jimp.read(imageSrc));
-  TEMPLATE_BEAD_SIZE = FIXED_WIDTH_BEAD_DIMENSIONS[Math.round((image.bitmap.width / image.bitmap.height) * FIXED_TEMPLATE_HEIGHT)];
 
+  if (specs.beadHeight && specs.beadWidth) {
+    TEMPLATE_BEAD_SIZE = {width: specs.beadWidth, height: specs.beadHeight}
+  } else {
+    TEMPLATE_BEAD_SIZE = FIXED_WIDTH_BEAD_DIMENSIONS[Math.round((image.bitmap.width / image.bitmap.height) * FIXED_TEMPLATE_HEIGHT)];
+  }
+  
   await (image.peyoteAbsoluteScale(1, TEMPLATE_BEAD_SIZE));
 
-  var palette = await (getDelicaPalette(image, colorCount));
+  var palette = await (getDelicaPalette(image, specs.colorCount));
   var pixelizedImage = await (peyotePixelateImage(image, palette, beadsPerColumnGroup));
-
   var numberedImage = await (numberImage(pixelizedImage, palette, beadsPerColumnGroup));
+  var finalTemplateImage = await (addGrid(numberedImage.image, beadsPerColumnGroup));
 
-  return await (addGrid(numberedImage, beadsPerColumnGroup));
-});
+  return {
+    image: finalTemplateImage,
+    colorMap: numberedImage.colorMap
+  };
+};
 
 module.exports = {
   build: build

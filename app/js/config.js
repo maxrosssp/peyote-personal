@@ -20,7 +20,7 @@ function Config($locationProvider, $routeProvider, $qProvider, stripeProvider, $
 
   $qProvider.errorOnUnhandledRejections(false);
 
-  stripeProvider.setPublishableKey('pk_test_8lpNNwFVokUif3qxk2N7fPd6');
+  stripeProvider.setPublishableKey('pk_live_ZJzerFM21zkDAlC01ylnd7dA');
 
   $httpProvider.defaults.useXDomain = true;
 }

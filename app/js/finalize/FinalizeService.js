@@ -29,7 +29,7 @@ function FinalizeService($http) {
       console.log('There was an error');
       console.log(err);
 
-      return err;
+      throw err;
     });
   };
 

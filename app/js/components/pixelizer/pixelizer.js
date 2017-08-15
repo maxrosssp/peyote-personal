@@ -15,6 +15,7 @@ function pixelizer(ngProgressFactory, CropImageService) {
     },
     link: function(scope, element, attrs, ctrl) {
       scope.progressbar = ngProgressFactory.createInstance();
+      scope.progressbar.setHeight('7px');
       scope.progressbar.setParent(angular.element(element).children()[0]);
 
       paper.setup(angular.element(element).children()[0].children[0]);

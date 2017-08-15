@@ -2,22 +2,19 @@
 
 angular.module('app').directive('orderReview', [orderReview]);
 
-function OrderReviewCtrl(OrderReviewService) {
+function OrderReviewCtrl(PEYOTE_PRICES, OrderReviewService) {
   var ctrl = this;
 
   ctrl.$onInit = function() {
-    ctrl.templatePrice = 20;
-    ctrl.pricePerSquareInch = 1.5;
-    ctrl.pricePerColor = 1;
-    ctrl.priceForClasps = 3;
-    ctrl.priceToShip = 5;
-    ctrl.salesTax = 0.06;
+    ctrl.disableShipping = PEYOTE_PRICES.disableShipping;
+
+    ctrl.prices = PEYOTE_PRICES;
 
     ctrl.mustShip = mustShip;
   };
 
   var mustShip = function() {
-    return ctrl.includeBeads || ctrl.includeClasps;
+    return ctrl.disableShipping ? false : (ctrl.includeBeads || ctrl.includeClasps);
   };
 
   ctrl.$onChanges = function(changesObj) {
@@ -32,8 +29,8 @@ function OrderReviewCtrl(OrderReviewService) {
     ctrl.subtotal = OrderReviewService.calculateSubtotal({
       templateSize: ctrl.templateSize,
       colorCount: ctrl.colorCount,
-      includeBeads: ctrl.includeBeads,
-      includeClasps: ctrl.includeClasps
+      includeBeads: (ctrl.disableShipping ? false : ctrl.includeBeads),
+      includeClasps: (ctrl.disableShipping ? false : ctrl.includeClasps)
     });
 
     var shipAndTax = OrderReviewService.shippingAndTaxCost(ctrl.subtotal, mustShip());
@@ -57,7 +54,7 @@ function orderReview() {
       mustShip: '='
     },
     controller: [
-      'OrderReviewService', OrderReviewCtrl
+      'PEYOTE_PRICES', 'OrderReviewService', OrderReviewCtrl
     ],
     controllerAs: 'ctrl',
     templateUrl: 'js/components/orderReview/orderReview.html'

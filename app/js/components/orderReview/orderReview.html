@@ -23,17 +23,18 @@
                 <td class="col-md-1 text-center"></td>
                 <td class="col-md-7"><em> Peyote Stitch Template ({{ctrl.templateSize.beads.display}}) </em></td>
                 <td class="col-md-2" style="text-align: center"> 1 </td>
-                <td class="col-md-1 text-center"> {{ctrl.templatePrice | currency:'$':2}} </td>
-                <td class="col-md-1 text-center"> {{ctrl.templatePrice | currency:'$':2}} </td>
+                <td class="col-md-1 text-center"> {{ctrl.prices.templatePrice | currency:'$':2}} </td>
+                <td class="col-md-1 text-center"> {{ctrl.prices.templatePrice | currency:'$':2}} </td>
             </tr>
 
             <tr>
                 <td class="col-md-1 text-center">
                     <input type="checkbox" 
                            ng-model="ctrl.includeBeads" 
-                           ng-change="ctrl.updateFinalPrice()">
+                           ng-change="ctrl.updateFinalPrice()"
+                           ng-disabled="ctrl.disableShipping">
                 </td>
-                <td class="col-md-7"><em>Include Beads With Purchase</em></td>
+                <td class="col-md-7"><em>Include Beads With Purchase {{ctrl.disableShipping ? '(NOT YET AVAILABLE)' : ''}}</em></td>
                 <td class="col-md-2" style="text-align: center"> -- </td>
                 <td class="col-md-1 text-center"> -- </td>
                 <td class="col-md-1 text-center"> -- </td>
@@ -43,28 +44,29 @@
                 <td class="col-md-1 text-center"></td>
                 <td class="col-md-7"><em> • Size ({{ctrl.templateSize.inches.display}}) </em></td>
                 <td class="col-md-2" style="text-align: center"> {{ctrl.templateSize.inches.value}} in.<sup>2</sup> </td>
-                <td class="col-md-1 text-center"> {{ctrl.pricePerSquareInch | currency:'$':2}} </td>
-                <td class="col-md-1 text-center"> {{ctrl.templateSize.inches.value * ctrl.pricePerSquareInch | currency:'$':2}} </td>
+                <td class="col-md-1 text-center"> {{ctrl.prices.pricePerSquareInch | currency:'$':2}} </td>
+                <td class="col-md-1 text-center"> {{ctrl.templateSize.inches.value * ctrl.prices.pricePerSquareInch | currency:'$':2}} </td>
             </tr>
 
             <tr class="collapsable-row" ng-if="ctrl.includeBeads">
                 <td class="col-md-1 text-center"></td>
                 <td class="col-md-7"><em> • Extra colors (colors over 12)</em></td>
                 <td class="col-md-2" style="text-align: center"> {{ctrl.colorCount - 12}} </td>
-                <td class="col-md-1 text-center"> {{ctrl.pricePerColor | currency:'$':2}} </td>
-                <td class="col-md-1 text-center"> {{(ctrl.colorCount - 12) * ctrl.pricePerColor | currency:'$':2}} </td>
+                <td class="col-md-1 text-center"> {{ctrl.prices.pricePerColor | currency:'$':2}} </td>
+                <td class="col-md-1 text-center"> {{(ctrl.colorCount - 12) * ctrl.prices.pricePerColor | currency:'$':2}} </td>
             </tr>
 
             <tr>
                 <td class="col-md-1 text-center">
                     <input type="checkbox" 
                            ng-model="ctrl.includeClasps" 
-                           ng-change="ctrl.updateFinalPrice()">
+                           ng-change="ctrl.updateFinalPrice()"
+                           ng-disabled="ctrl.disableShipping">
                 </td>
-                <td class="col-md-7"><em>Include Clasps</em></td>
+                <td class="col-md-7"><em>Include Clasps  {{ctrl.disableShipping ? '(NOT YET AVAILABLE)' : ''}}</em></td>
                 <td class="col-md-2" style="text-align: center"> {{ctrl.includeClasps ? '1' : '0'}} </td>
-                <td class="col-md-1 text-center"> {{ctrl.priceForClasps | currency:'$':2}} </td>
-                <td class="col-md-1 text-center"> {{ctrl.priceForClasps * (ctrl.includeClasps ? 1 : 0) | currency:'$':2}} </td>
+                <td class="col-md-1 text-center"> {{ctrl.prices.priceForClasps | currency:'$':2}} </td>
+                <td class="col-md-1 text-center"> {{ctrl.prices.priceForClasps * (ctrl.includeClasps ? 1 : 0) | currency:'$':2}} </td>
             </tr>
 
             <tr>
@@ -78,8 +80,8 @@
                 </td>
                 <td class="text-center">
                     <p><strong> {{ctrl.subtotal | currency:'$':2}} </strong></p>
-                    <p><strong> {{ctrl.subtotal * ctrl.salesTax | currency:'$':2}} </strong></p>
-                    <p ng-if="ctrl.mustShip()"><strong>{{ctrl.priceToShip | currency:'$':2}}</strong></p>
+                    <p><strong> {{ctrl.subtotal * ctrl.prices.salesTax | currency:'$':2}} </strong></p>
+                    <p ng-if="ctrl.mustShip()"><strong>{{ctrl.prices.priceToShip | currency:'$':2}}</strong></p>
                 </td>
             </tr>
             <tr>

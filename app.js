@@ -8,14 +8,26 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var cors = require('cors')
+var cors = require('cors');
+var mailer = require('express-mailer');
 
 var index = require('./routes/index');
 var image = require('./routes/image');
 var checkout = require('./routes/checkout');
-var charge = require('./routes/charge');
 
 var app = express();
+
+mailer.extend(app, {
+  from: process.env.PEYOTE_EMAIL,
+  host: 'smtp.gmail.com', 
+  secureConnection: true,
+  port: 465,
+  transportMethod: 'SMTP',
+  auth: {
+    user: process.env.PEYOTE_EMAIL,
+    pass: process.env.PEYOTE_EMAIL_PASSWORD
+  }
+});
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -31,7 +43,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/image', image);
 app.use('/checkout', checkout);
-app.use('/charge', charge);
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -46,19 +57,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-/**
- * AWS Setup
- */
-
-var AWS = require('aws-sdk');
-AWS.config.update({region: 'us-east-1'});
-
-var s3 = new AWS.S3();
-
-// Create a bucket and upload something into it
-var bucketName = 'peyote-personal-orders';
-var keyName = 'hello_world.txt';
 
 /**
  * 

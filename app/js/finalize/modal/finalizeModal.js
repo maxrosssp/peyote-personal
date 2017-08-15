@@ -2,7 +2,7 @@
 
 angular.module('app').directive('finalizeModal', [finalizeModal]);
 
-function FinalizeModalCtrl($scope, $timeout, $http, $colorThief, PEYOTE_VALUES) {
+function FinalizeModalCtrl($window, $scope, $timeout, $http, $colorThief, PEYOTE_VALUES) {
   var ctrl = this;
   var finalCroppedUrl;
 
@@ -35,6 +35,10 @@ function FinalizeModalCtrl($scope, $timeout, $http, $colorThief, PEYOTE_VALUES) 
     ctrl.currentPage = ctrl.modalPages.uploadImage;
     ctrl.colorCount = 12;
     ctrl.orderReviewPixelizerId = 'review-order-preview';
+
+    $scope.$on('toggle-checkout-button', function(event, unlocked) {
+      ctrl.canAttemptCheckout = unlocked;
+    });
   };
 
   ctrl.goToNextPage = function() {
@@ -96,9 +100,13 @@ function FinalizeModalCtrl($scope, $timeout, $http, $colorThief, PEYOTE_VALUES) 
 
     return ctrl.finalizeCheckout(finalCroppedUrl, finalSpecs)
     .then(function(res) {
-      console.log(res);
-      
-      return res;
+      console.log(res.data);
+
+      if (res.data.path) {
+        $window.location.href = res.data.path;
+      } else {
+        return res.data;
+      }
     });
   };
 
@@ -115,7 +123,7 @@ function finalizeModal() {
       modalInstance: '='
     },
     controller: [
-      '$scope', '$timeout', '$http', '$colorThief', 'PEYOTE_VALUES', FinalizeModalCtrl
+      '$window', '$scope', '$timeout', '$http', '$colorThief', 'PEYOTE_VALUES', FinalizeModalCtrl
     ],
     controllerAs: 'ctrl',
     link: function(scope, element, attrs, ctrl) {

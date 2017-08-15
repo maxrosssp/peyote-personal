@@ -1,24 +1,33 @@
 var express = require('express');
 var http = require('http');
+var async = require('async');
+// var await = require('await');
+var Jimp = require('jimp');
 
 var router = express.Router();
 
-var getFileTypeFromBuffer = function (buf) {
+var getMIMEFromBuffer = async function(buf) {
   if (!(buf && buf.length > 1)) return null;
-  if (buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF) return {ext: 'jpg', mime: 'image/jpeg'};
-  if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47) return {ext: 'png', mime: 'image/png'};
-  if (buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46) return {ext: 'gif', mime: 'image/gif'};
-  if (buf[8] === 0x57 && buf[9] === 0x45 && buf[10] === 0x42 && buf[11] === 0x50) return {ext: 'webp', mime: 'image/webp'};
-  if (buf[0] === 0x46 && buf[1] === 0x4C && buf[2] === 0x49 && buf[3] === 0x46) return {ext: 'flif', mime: 'image/flif'};
+  if (buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF) return 'image/jpeg';
+  if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47) return 'image/png';
+  if (buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46) return 'image/gif';
+  if (buf[8] === 0x57 && buf[9] === 0x45 && buf[10] === 0x42 && buf[11] === 0x50) return 'image/webp';
+  if (buf[0] === 0x46 && buf[1] === 0x4C && buf[2] === 0x49 && buf[3] === 0x46) return 'image/flif';
   // needs to be before `tif` check
-  if (((buf[0] === 0x49 && buf[1] === 0x49 && buf[2] === 0x2A && buf[3] === 0x0) || (buf[0] === 0x4D && buf[1] === 0x4D && buf[2] === 0x0 && buf[3] === 0x2A)) && buf[8] === 0x43 && buf[9] === 0x52) return {ext: 'cr2', mime: 'image/x-canon-cr2'};
-  if ((buf[0] === 0x49 && buf[1] === 0x49 && buf[2] === 0x2A && buf[3] === 0x0) || (buf[0] === 0x4D && buf[1] === 0x4D && buf[2] === 0x0 && buf[3] === 0x2A)) return {ext: 'tif', mime: 'image/tiff'};
-  if (buf[0] === 0x42 && buf[1] === 0x4D) return {ext: 'bmp', mime: 'image/bmp'};
-  if (buf[0] === 0x49 && buf[1] === 0x49 && buf[2] === 0xBC) return {ext: 'jxr', mime: 'image/vnd.ms-photo'};
-  if (buf[0] === 0x38 && buf[1] === 0x42 && buf[2] === 0x50 && buf[3] === 0x53) return {ext: 'psd', mime: 'image/vnd.adobe.photoshop'};
-  if (buf[0] === 0x00 && buf[1] === 0x00 && buf[2] === 0x01 && buf[3] === 0x00) return {ext: 'ico', mime: 'image/x-icon'};
+  if (((buf[0] === 0x49 && buf[1] === 0x49 && buf[2] === 0x2A && buf[3] === 0x0) || (buf[0] === 0x4D && buf[1] === 0x4D && buf[2] === 0x0 && buf[3] === 0x2A)) && buf[8] === 0x43 && buf[9] === 0x52) return 'image/x-canon-cr2';
+  if ((buf[0] === 0x49 && buf[1] === 0x49 && buf[2] === 0x2A && buf[3] === 0x0) || (buf[0] === 0x4D && buf[1] === 0x4D && buf[2] === 0x0 && buf[3] === 0x2A)) return 'image/tiff';
+  if (buf[0] === 0x42 && buf[1] === 0x4D) return 'image/bmp';
+  if (buf[0] === 0x49 && buf[1] === 0x49 && buf[2] === 0xBC) return 'image/vnd.ms-photo';
+  if (buf[0] === 0x38 && buf[1] === 0x42 && buf[2] === 0x50 && buf[3] === 0x53) return 'image/vnd.adobe.photoshop';
+  if (buf[0] === 0x00 && buf[1] === 0x00 && buf[2] === 0x01 && buf[3] === 0x00) return 'image/x-icon';
 
   return null;
+};
+
+var getMIMEFromBufferJimp = async function(buf) {
+  var image = await (Jimp.read(buf));
+
+  return image.getMIME();
 };
 
 var getUrlParts = function(url) {
@@ -39,7 +48,12 @@ router.post('/download', function(req, res, next) {
   }, function(response) {
     var data = '';
 
-    console.log(urlParts.hostname + ':' + response.statusCode);
+    if (response.statusCode !== 200) {
+      console.log(urlParts.hostname);
+      console.log(urlParts.path);
+      console.log(response);
+    }
+
     response.setEncoding('base64');
 
     response.on('data', function (chunk) {
@@ -47,19 +61,25 @@ router.post('/download', function(req, res, next) {
     });
 
     response.on('end', function() {
-      var imageBuffer = Buffer.from(data, 'base64');
-      var fileType = getFileTypeFromBuffer(imageBuffer);
+      var imageBuffer = new Buffer(data, 'base64');
 
-      if (!fileType) {
-        res.status(402).send('Invalid file type');
-      } else {
+      getMIMEFromBuffer(imageBuffer)
+      .then(function(fileType) {
+        return fileType || getMIMEFromBufferJimp(imageBuffer);
+      })
+      .then(function(fileType) {
         res.set({
-          'Content-Type': 'text/plain',
+          'Content-Type': fileType,
           'Content-Length': imageBuffer.length
         });
 
-        res.send('data:' + fileType.mime + ';base64,' + imageBuffer.toString('base64'));
-      }
+        res.send('data:' + fileType + ';base64,' + imageBuffer.toString('base64'));
+      })
+      .catch(function(err) {
+        console.log(err);
+
+        res.status(402).send('Invalid file type');
+      });
     });
   });
 

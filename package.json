@@ -6,7 +6,6 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "asyncawait": "^1.0.6",
     "atob": "^2.0.3",
     "aws-sdk": "^2.89.0",
     "body-parser": "~1.17.1",
@@ -16,29 +15,30 @@
     "cors": "^2.8.4",
     "debug": "~2.6.3",
     "express": "~4.15.2",
-    "grunt": "^1.0.1",
-    "grunt-include-source": "^1.1.0",
-    "grunt-wiredep": "^3.0.1",
+    "express-mailer": "^0.3.1",
     "http-server": "^0.9.0",
     "jade": "~1.11.0",
-    "jasmine-core": "^2.4.1",
     "jimp": "^0.2.28",
-    "karma": "^0.13.22",
-    "karma-chrome-launcher": "^0.2.3",
-    "karma-firefox-launcher": "^0.1.7",
-    "karma-jasmine": "^0.3.8",
-    "karma-junit-reporter": "^0.4.1",
     "morgan": "~1.8.1",
     "protractor": "^4.0.9",
     "serve-favicon": "~2.4.2",
     "stripe": "^4.23.1"
   },
   "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-include-source": "^1.1.0",
+    "grunt-wiredep": "^3.0.1",
     "grunt-angular-templates": "^1.1.0",
     "grunt-bower-concat": "^1.0.0",
     "grunt-contrib-compress": "^1.4.3",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-cssmin": "^2.2.0",
-    "grunt-contrib-uglify": "^3.0.1"
+    "grunt-contrib-uglify": "^3.0.1",
+    "jasmine-core": "^2.4.1",
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^0.2.3",
+    "karma-firefox-launcher": "^0.1.7",
+    "karma-jasmine": "^0.3.8",
+    "karma-junit-reporter": "^0.4.1"
   }
 }

@@ -195,17 +195,18 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "                <td class=\"col-md-1 text-center\"></td>\n" +
     "                <td class=\"col-md-7\"><em> Peyote Stitch Template ({{ctrl.templateSize.beads.display}}) </em></td>\n" +
     "                <td class=\"col-md-2\" style=\"text-align: center\"> 1 </td>\n" +
-    "                <td class=\"col-md-1 text-center\"> {{ctrl.templatePrice | currency:'$':2}} </td>\n" +
-    "                <td class=\"col-md-1 text-center\"> {{ctrl.templatePrice | currency:'$':2}} </td>\n" +
+    "                <td class=\"col-md-1 text-center\"> {{ctrl.prices.templatePrice | currency:'$':2}} </td>\n" +
+    "                <td class=\"col-md-1 text-center\"> {{ctrl.prices.templatePrice | currency:'$':2}} </td>\n" +
     "            </tr>\n" +
     "\n" +
     "            <tr>\n" +
     "                <td class=\"col-md-1 text-center\">\n" +
     "                    <input type=\"checkbox\" \n" +
     "                           ng-model=\"ctrl.includeBeads\" \n" +
-    "                           ng-change=\"ctrl.updateFinalPrice()\">\n" +
+    "                           ng-change=\"ctrl.updateFinalPrice()\"\n" +
+    "                           ng-disabled=\"ctrl.disableShipping\">\n" +
     "                </td>\n" +
-    "                <td class=\"col-md-7\"><em>Include Beads With Purchase</em></td>\n" +
+    "                <td class=\"col-md-7\"><em>Include Beads With Purchase {{ctrl.disableShipping ? '(NOT YET AVAILABLE)' : ''}}</em></td>\n" +
     "                <td class=\"col-md-2\" style=\"text-align: center\"> -- </td>\n" +
     "                <td class=\"col-md-1 text-center\"> -- </td>\n" +
     "                <td class=\"col-md-1 text-center\"> -- </td>\n" +
@@ -215,28 +216,29 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "                <td class=\"col-md-1 text-center\"></td>\n" +
     "                <td class=\"col-md-7\"><em> • Size ({{ctrl.templateSize.inches.display}}) </em></td>\n" +
     "                <td class=\"col-md-2\" style=\"text-align: center\"> {{ctrl.templateSize.inches.value}} in.<sup>2</sup> </td>\n" +
-    "                <td class=\"col-md-1 text-center\"> {{ctrl.pricePerSquareInch | currency:'$':2}} </td>\n" +
-    "                <td class=\"col-md-1 text-center\"> {{ctrl.templateSize.inches.value * ctrl.pricePerSquareInch | currency:'$':2}} </td>\n" +
+    "                <td class=\"col-md-1 text-center\"> {{ctrl.prices.pricePerSquareInch | currency:'$':2}} </td>\n" +
+    "                <td class=\"col-md-1 text-center\"> {{ctrl.templateSize.inches.value * ctrl.prices.pricePerSquareInch | currency:'$':2}} </td>\n" +
     "            </tr>\n" +
     "\n" +
     "            <tr class=\"collapsable-row\" ng-if=\"ctrl.includeBeads\">\n" +
     "                <td class=\"col-md-1 text-center\"></td>\n" +
     "                <td class=\"col-md-7\"><em> • Extra colors (colors over 12)</em></td>\n" +
     "                <td class=\"col-md-2\" style=\"text-align: center\"> {{ctrl.colorCount - 12}} </td>\n" +
-    "                <td class=\"col-md-1 text-center\"> {{ctrl.pricePerColor | currency:'$':2}} </td>\n" +
-    "                <td class=\"col-md-1 text-center\"> {{(ctrl.colorCount - 12) * ctrl.pricePerColor | currency:'$':2}} </td>\n" +
+    "                <td class=\"col-md-1 text-center\"> {{ctrl.prices.pricePerColor | currency:'$':2}} </td>\n" +
+    "                <td class=\"col-md-1 text-center\"> {{(ctrl.colorCount - 12) * ctrl.prices.pricePerColor | currency:'$':2}} </td>\n" +
     "            </tr>\n" +
     "\n" +
     "            <tr>\n" +
     "                <td class=\"col-md-1 text-center\">\n" +
     "                    <input type=\"checkbox\" \n" +
     "                           ng-model=\"ctrl.includeClasps\" \n" +
-    "                           ng-change=\"ctrl.updateFinalPrice()\">\n" +
+    "                           ng-change=\"ctrl.updateFinalPrice()\"\n" +
+    "                           ng-disabled=\"ctrl.disableShipping\">\n" +
     "                </td>\n" +
-    "                <td class=\"col-md-7\"><em>Include Clasps</em></td>\n" +
+    "                <td class=\"col-md-7\"><em>Include Clasps  {{ctrl.disableShipping ? '(NOT YET AVAILABLE)' : ''}}</em></td>\n" +
     "                <td class=\"col-md-2\" style=\"text-align: center\"> {{ctrl.includeClasps ? '1' : '0'}} </td>\n" +
-    "                <td class=\"col-md-1 text-center\"> {{ctrl.priceForClasps | currency:'$':2}} </td>\n" +
-    "                <td class=\"col-md-1 text-center\"> {{ctrl.priceForClasps * (ctrl.includeClasps ? 1 : 0) | currency:'$':2}} </td>\n" +
+    "                <td class=\"col-md-1 text-center\"> {{ctrl.prices.priceForClasps | currency:'$':2}} </td>\n" +
+    "                <td class=\"col-md-1 text-center\"> {{ctrl.prices.priceForClasps * (ctrl.includeClasps ? 1 : 0) | currency:'$':2}} </td>\n" +
     "            </tr>\n" +
     "\n" +
     "            <tr>\n" +
@@ -250,8 +252,8 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "                </td>\n" +
     "                <td class=\"text-center\">\n" +
     "                    <p><strong> {{ctrl.subtotal | currency:'$':2}} </strong></p>\n" +
-    "                    <p><strong> {{ctrl.subtotal * ctrl.salesTax | currency:'$':2}} </strong></p>\n" +
-    "                    <p ng-if=\"ctrl.mustShip()\"><strong>{{ctrl.priceToShip | currency:'$':2}}</strong></p>\n" +
+    "                    <p><strong> {{ctrl.subtotal * ctrl.prices.salesTax | currency:'$':2}} </strong></p>\n" +
+    "                    <p ng-if=\"ctrl.mustShip()\"><strong>{{ctrl.prices.priceToShip | currency:'$':2}}</strong></p>\n" +
     "                </td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
@@ -268,7 +270,7 @@ angular.module('app').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('js/components/payment/makePayment.html',
-    "<div class=\"col-md-12\">\n" +
+    "<div id=\"make-payment-page\" class=\"col-md-12\">\n" +
     "	<div class=\"row panel panel-warning\">\n" +
     "		<div class=\"panel-body\">\n" +
     "			<h3 class=\"col-md-12\" style=\"text-align: center\">\n" +
@@ -280,58 +282,159 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "		</div>\n" +
     "	</div>\n" +
     "\n" +
+    "\n" +
+    "	<div class=\"row\" ng-if=\"ctrl.errorAlert\">\n" +
+    "		<div class=\"alert alert-danger alert-dismissible col-md-12\" role=\"alert\">\n" +
+    "		  	<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\" ng-click=\"ctrl.errorAlert = undefined;\"><span aria-hidden=\"true\">&times;</span></button>\n" +
+    "		  	<strong>{{ctrl.errorAlert.message}}</strong> Make sure the information provided is correct, and try again.\n" +
+    "		</div>\n" +
+    "	</div>\n" +
+    "\n" +
     "	<div class=\"row make-payment\">\n" +
     "		<div class=\"col-md-6\">\n" +
     "			<legend>Payment Info</legend>\n" +
     "\n" +
     "			<div class=\"well\">\n" +
-    "				<stripe-payment get-token=\"ctrl.getToken\" can-create-token=\"ctrl.canCreateToken\"></stripe-payment>\n" +
+    "				<form name=\"ctrl.paymentForm\" class=\"stripe-payment\" novalidate>\n" +
+    "					<div class=\"row\">\n" +
+    "						<div class=\"form-group col-md-12\">\n" +
+    "							<label>Name On Card</label>\n" +
+    "							<input name=\"cardName\"\n" +
+    "								   type=\"text\"\n" +
+    "								   ng-model=\"ctrl.card.name\"\n" +
+    "								   class=\"form-control\"\n" +
+    "								   ng-required=\"true\">\n" +
+    "						</div>\n" +
+    "\n" +
+    "						<div class=\"form-group col-md-9\" ng-class=\"ctrl.inputClass('cardNumber')\">\n" +
+    "							<label>Card Number</label>\n" +
+    "							<div class=\"input-group\">\n" +
+    "								<span class=\"input-group-addon brand\" id=\"credit-card-type\">\n" +
+    "									<i class=\"pf\" id=\"brand-icon\" ng-class=\"ctrl.getPfClass(ctrl.paymentForm.cardNumber.$ccEagerType)\"></i>\n" +
+    "								</span>\n" +
+    "								<input cc-number cc-eager-type cc-format cc-type=\"ctrl.paymentForm.cardNumber.$ccEagerType\"\n" +
+    "									   type=\"text\"\n" +
+    "									   name=\"cardNumber\"\n" +
+    "									   ng-model=\"ctrl.card.number\"\n" +
+    "									   ng-model-options=\"{allowInvalid: true}\"\n" +
+    "									   class=\"form-control\"\n" +
+    "									   ng-required=\"true\"\n" +
+    "									   ng-change=\"ctrl.updateFunctions.cardNumber()\">\n" +
+    "							</div>\n" +
+    "						</div>\n" +
+    "\n" +
+    "						<div class=\"form-group col-md-3\" ng-class=\"ctrl.inputClass('cardCvc')\">\n" +
+    "							<label>CVC</label>\n" +
+    "							<input cc-cvc cc-format cc-type=\"ctrl.paymentForm.cardNumber.$ccEagerType\"\n" +
+    "								   name=\"cardCvc\"\n" +
+    "								   type=\"text\"\n" +
+    "								   ng-model=\"ctrl.card.cvc\"\n" +
+    "								   ng-model-options=\"{allowInvalid: true}\"\n" +
+    "								   class=\"form-control\"\n" +
+    "								   ng-required=\"true\"\n" +
+    "								   ng-change=\"ctrl.updateFunctions.cardCvc()\">\n" +
+    "						</div>\n" +
+    "\n" +
+    "						<div class=\"form-group col-md-6\" cc-exp>\n" +
+    "							<label>Expiration Date</label>\n" +
+    "							<div class=\"row\">\n" +
+    "								<div class=\"col-md-5\">\n" +
+    "									<input cc-exp-month cc-format\n" +
+    "										   type=\"text\"\n" +
+    "										   placeholder=\"MM\"\n" +
+    "									       name=\"cardExpMonth\"\n" +
+    "										   ng-model=\"ctrl.card.exp_month\"\n" +
+    "										   ng-model-options=\"{allowInvalid: true}\"\n" +
+    "										   class=\"form-control\"\n" +
+    "										   ng-required=\"true\"\n" +
+    "										   ng-keyup=\"ctrl.updateFunctions.cardExpMonth($event)\">\n" +
+    "								</div>\n" +
+    "\n" +
+    "								<div class=\"col-md-5\">\n" +
+    "									<input cc-exp-year cc-format\n" +
+    "										   type=\"text\"\n" +
+    "										   placeholder=\"YY\"\n" +
+    "										   name=\"cardExpYear\"\n" +
+    "										   ng-model=\"ctrl.card.exp_year\"\n" +
+    "										   class=\"form-control\"\n" +
+    "										   ng-required=\"true\"\n" +
+    "										   ng-keyup=\"ctrl.updateFunctions.cardExpYear($event)\">\n" +
+    "								</div>\n" +
+    "							</div>\n" +
+    "						</div>\n" +
+    "\n" +
+    "						<div class=\"form-group col-md-6\">\n" +
+    "							<label>Zip Code</label>\n" +
+    "							<input name=\"cardAddressZip\"\n" +
+    "								   type=\"text\"\n" +
+    "								   ng-model=\"ctrl.card.address_zip\"\n" +
+    "								   ng-pattern=\"/\\d{5}(?:[-\\s]\\d{4})?/\"\n" +
+    "								   maxlength=\"{{ctrl.zipLength}}\"\n" +
+    "								   class=\"form-control\"\n" +
+    "								   ng-required=\"true\">\n" +
+    "						</div>\n" +
+    "					</div>\n" +
+    "				</form>\n" +
     "			</div>\n" +
     "		</div>\n" +
     "\n" +
-    "		<form name=\"cardholderInfo\" class=\"col-md-6\">\n" +
+    "		<form name=\"ctrl.cardholderInfo\" class=\"col-md-6\">\n" +
     "			<fieldset>\n" +
     "				<legend>Send To</legend>\n" +
     "\n" +
     "				<div class=\"row\">\n" +
     "					<div class=\"form-group col-md-12\">\n" +
-    "						<label for=\"email\">Email</label>\n" +
-    "						<input id=\"email\" type=\"email\" placeholder=\"Email\" class=\"form-control\" ng-model=\"ctrl.email\">\n" +
+    "						<label for=\"email\">E-mail</label>\n" +
+    "						<input id=\"email\" \n" +
+    "							   name=\"email\" \n" +
+    "							   type=\"email\" \n" +
+    "							   placeholder=\"E-mail\" \n" +
+    "							   class=\"form-control\" \n" +
+    "							   ng-model=\"ctrl.email\" \n" +
+    "							   required>\n" +
     "					</div>\n" +
     "\n" +
-    "					<div class=\"form-group col-md-12\">\n" +
-    "						<label for=\"email-confirm\">Confirm Email</label>\n" +
-    "						<input id=\"email-confirm\" type=\"email\" placeholder=\"Confirm Email\" class=\"form-control\" ng-model=\"ctrl.emailConfirm\">\n" +
+    "					<div class=\"form-group col-md-12\" ng-class=\"{'has-error': ctrl.error.type === 'emailMatch'}\">\n" +
+    "						<label for=\"email-confirm\">Confirm E-mail</label>\n" +
+    "						<input id=\"email-confirm\" \n" +
+    "							   name=\"emailConfirm\" \n" +
+    "							   type=\"email\" \n" +
+    "							   placeholder=\"Confirm E-mail\" \n" +
+    "							   class=\"form-control\" \n" +
+    "							   ng-model=\"ctrl.emailConfirm\" \n" +
+    "							   ng-change=\"ctrl.error = {};\" \n" +
+    "							   required>\n" +
+    "						<span ng-if=\"ctrl.error.type === 'emailMatch'\" id=\"email-confirm-message\" class=\"help-block\">{{ctrl.error.message}}</span>\n" +
     "					</div>\n" +
     "				</div>\n" +
     "\n" +
-    "				<div class=\"row\" ng-if=\"ctrl.mustShip()\">\n" +
+    "				<div ng-if=\"ctrl.mustShip()\">\n" +
     "					<legend>Shipping Address</legend>\n" +
     "\n" +
-    "					<div class=\"form-group col-md-12\">\n" +
-    "						<label class=\"col-sm-2 control-label\" for=\"textinput\">Line 1</label>\n" +
-    "						<div class=\"col-sm-10\">\n" +
+    "					<div class=\"form-group row\">\n" +
+    "						<label class=\"col-md-2 control-label\" for=\"textinput\">Line 1</label>\n" +
+    "						<div class=\"col-md-10\">\n" +
     "						  	<input type=\"text\" placeholder=\"Address Line 1\" class=\"form-control\">\n" +
     "						</div>\n" +
     "					</div>\n" +
     "\n" +
-    "					<div class=\"form-group col-md-12\">\n" +
-    "						<label class=\"col-sm-2 control-label\" for=\"textinput\">Line 2</label>\n" +
-    "						<div class=\"col-sm-10\">\n" +
+    "					<div class=\"form-group row\">\n" +
+    "						<label class=\"col-md-2 control-label\" for=\"textinput\">Line 2</label>\n" +
+    "						<div class=\"col-md-10\">\n" +
     "						  	<input type=\"text\" placeholder=\"Address Line 2\" class=\"form-control\">\n" +
     "						</div>\n" +
     "					</div>\n" +
     "\n" +
-    "					<div class=\"form-group col-md-12\">\n" +
-    "						<label class=\"col-sm-2 control-label\" for=\"textinput\">City</label>\n" +
-    "						<div class=\"col-sm-10\">\n" +
+    "					<div class=\"form-group row\">\n" +
+    "						<label class=\"col-md-2 control-label\" for=\"textinput\">City</label>\n" +
+    "						<div class=\"col-md-10\">\n" +
     "						  	<input type=\"text\" placeholder=\"City\" class=\"form-control\">\n" +
     "						</div>\n" +
     "					</div>\n" +
     "\n" +
-    "					<div class=\"form-group\">\n" +
-    "						<label class=\"col-sm-2 control-label\" for=\"textinput\">Country</label>\n" +
-    "						<div class=\"col-sm-10\">\n" +
+    "					<div class=\"form-group row\">\n" +
+    "						<label class=\"col-md-2 control-label\" for=\"textinput\">Country</label>\n" +
+    "						<div class=\"col-md-10\">\n" +
     "						  	<input type=\"text\" placeholder=\"Country\" class=\"form-control\">\n" +
     "						</div>\n" +
     "					</div>\n" +
@@ -340,83 +443,6 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "    	</form>\n" +
     "	</div>\n" +
     "</div>\n"
-  );
-
-
-  $templateCache.put('js/components/payment/stripePayment/stripePayment.html',
-    "<form name=\"ctrl.paymentForm\" class=\"stripe-payment\" novalidate>\n" +
-    "	<div class=\"row\">\n" +
-    "		<div class=\"form-group col-md-12\">\n" +
-    "			<label>Name On Card</label>\n" +
-    "			<input name=\"cardName\"\n" +
-    "				   type=\"text\"\n" +
-    "				   ng-model=\"ctrl.card.name\"\n" +
-    "				   class=\"form-control\"\n" +
-    "				   ng-required=\"true\">\n" +
-    "		</div>\n" +
-    "\n" +
-    "		<div class=\"form-group col-md-9\" ng-class=\"ctrl.inputClass('cardNumber')\">\n" +
-    "			<label>Card Number</label>\n" +
-    "			<div class=\"input-group\">\n" +
-    "				<span class=\"input-group-addon brand\" id=\"credit-card-type\">\n" +
-    "					<i class=\"pf\" id=\"brand-icon\" ng-class=\"ctrl.getPfClass(ctrl.paymentForm.cardNumber.$ccEagerType)\"></i>\n" +
-    "				</span>\n" +
-    "				<input cc-number cc-eager-type cc-format cc-type=\"ctrl.paymentForm.cardNumber.$ccEagerType\"\n" +
-    "					   type=\"text\"\n" +
-    "					   name=\"cardNumber\"\n" +
-    "					   ng-model=\"ctrl.card.number\"\n" +
-    "					   class=\"form-control\"\n" +
-    "					   ng-required=\"true\">\n" +
-    "			</div>\n" +
-    "		</div>\n" +
-    "\n" +
-    "		<div class=\"form-group col-md-3\" ng-class=\"ctrl.inputClass('cardCvc')\">\n" +
-    "			<label>CVC</label>\n" +
-    "			<input cc-cvc cc-format cc-type=\"ctrl.paymentForm.cardNumber.$ccEagerType\"\n" +
-    "				   name=\"cardCvc\"\n" +
-    "				   type=\"text\"\n" +
-    "				   ng-model=\"ctrl.card.cvc\"\n" +
-    "				   class=\"form-control\"\n" +
-    "				   ng-required=\"true\">\n" +
-    "		</div>\n" +
-    "\n" +
-    "		<div class=\"form-group col-md-6\" cc-exp>\n" +
-    "			<label>Expiration Date</label>\n" +
-    "			<div class=\"row\">\n" +
-    "				<div class=\"col-md-5\">\n" +
-    "					<input cc-exp-month cc-format\n" +
-    "						   type=\"text\"\n" +
-    "						   placeholder=\"MM\"\n" +
-    "					       name=\"cardExpMonth\"\n" +
-    "						   ng-model=\"ctrl.card.exp_month\"\n" +
-    "						   class=\"form-control\"\n" +
-    "						   ng-required=\"true\">\n" +
-    "				</div>\n" +
-    "\n" +
-    "				<div class=\"col-md-5\">\n" +
-    "					<input cc-exp-year cc-format\n" +
-    "						   type=\"text\"\n" +
-    "						   placeholder=\"YY\"\n" +
-    "						   name=\"cardExpYear\"\n" +
-    "						   ng-model=\"ctrl.card.exp_year\"\n" +
-    "						   class=\"form-control\"\n" +
-    "						   ng-required=\"true\">\n" +
-    "				</div>\n" +
-    "			</div>\n" +
-    "		</div>\n" +
-    "\n" +
-    "		<div class=\"form-group col-md-6\">\n" +
-    "			<label>Zip Code</label>\n" +
-    "			<input name=\"cardAddressZip\"\n" +
-    "				   type=\"text\"\n" +
-    "				   ng-model=\"ctrl.card.address_zip\"\n" +
-    "				   ng-pattern=\"/\\d{5}(?:[-\\s]\\d{4})?/\"\n" +
-    "				   maxlength=\"{{ctrl.zipLength}}\"\n" +
-    "				   class=\"form-control\"\n" +
-    "				   ng-required=\"true\">\n" +
-    "		</div>\n" +
-    "	</div>\n" +
-    "</form>\n"
   );
 
 
@@ -514,8 +540,7 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "		  	<div class=\"col-md-12\">\n" +
     "		  		<make-payment must-ship=\"ctrl.mustShip()\"\n" +
     "		  					  total-price=\"ctrl.finalPrice\"\n" +
-    "		  					  finalize-checkout=\"ctrl.finalizeCheckout\"\n" +
-    "		  					  can-create-token=\"ctrl.canCreateToken\">\n" +
+    "		  					  finalize-checkout=\"ctrl.finalizeCheckout\">\n" +
     "		  		</make-payment>\n" +
     "		  	</div>\n" +
     "		</div>\n" +
@@ -523,7 +548,7 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "\n" +
     "	<div class=\"modal-footer\">\n" +
     "		<button class=\"btn btn-primary\" type=\"button\" ng-click=\"ctrl.goToPreviousPage()\">Back</button>\n" +
-    "	    <button class=\"btn btn-primary\" type=\"button\" ng-click=\"ctrl.payAndContinue()\">Review Order</button>\n" +
+    "	    <button class=\"btn btn-primary\" type=\"button\" ng-click=\"ctrl.payAndContinue()\" ng-disabled=\"!ctrl.canAttemptCheckout\">Submit</button>\n" +
     "	</div>\n" +
     "</div>"
   );

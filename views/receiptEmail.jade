@@ -1,0 +1,30 @@
+html
+  head
+    meta(http-equiv = 'Content-Type', content = 'text/html; charset=UTF-8')
+    title= subject
+
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css")
+
+  body
+    h1.h1 Congratulations
+
+    p Order Id: #{orderId}
+
+    p Attached is your personalized peyote stitch template. The numbers found on the template correspond to the table below.
+
+    p Here's a list of the beads we suggest you get for each color, and the amount you'll need of each:
+
+    table(class="table")
+      thead
+        tr
+          th #
+          th Color
+          th Delica ID
+          th Count
+      tbody
+        each val, index in colorMap
+          tr
+            th(scope="row")= index
+            td(style={background: val.hex})
+            td= val.delicaId
+            td= val.count

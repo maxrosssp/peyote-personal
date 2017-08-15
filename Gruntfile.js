@@ -86,10 +86,20 @@ module.exports = function(grunt) {
     compress: {
       main: {
         options: {
-          archive: 'peyote-personal.zip'
+          archive: 'peyote-personal' + (grunt.option('ver') ? ('-' + grunt.option('ver')) : '') + '.zip'
         },
         files: [
-          {src: ['**', '*/**', '!node_modules/**', '!app/**', '!peyote-personal/**','!peyote-personal.zip'], dest: '/'}
+          {
+            src: [
+              'app.js',
+              'package.json',
+              'bin/**',
+              'public/**', 
+              'routes/**', 
+              'views/**'
+            ], 
+            dest: '/'
+          }
         ]
       }
     }

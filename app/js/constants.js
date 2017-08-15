@@ -27,6 +27,7 @@ angular.module('app')
 })
 
 .constant('PEYOTE_PRICES', {
+  disableShipping: true,
   templatePrice: 20,
   pricePerSquareInch: 1.5,
   pricePerColor: 1,
@@ -104,52 +105,52 @@ angular.module('app')
 .constant('CARD_TYPES', {
   'Visa': {
     iconClass: 'pf-visa',
-    possibleLengths: [16, 19],
+    length: 16,
     cvcLength: 3
   },
   'Maestro': {
     iconClass: 'pf-credit-card',
-    possibleLengths: [16, 19],
+    length: 16,
     cvcLength: 3
   },
   'Forbrugsforeningen': {
     iconClass: 'pf-credit-card',
-    possibleLengths: [16],
+    length: 16,
     cvcLength: 3
   },
   'Dankort': {
     iconClass: 'pf-credit-card',
-    possibleLengths: [16],
+    length: 16,
     cvcLength: 3
   },
   'MasterCard': {
     iconClass: 'pf-mastercard',
-    possibleLengths: [16],
+    length: 16,
     cvcLength: 3
   },
   'American Express': {
     iconClass: 'pf-american-express',
-    possibleLengths: [15],
+    length: 15,
     cvcLength: 4
   },
   'Diners Club': {
     iconClass: 'pf-diners',
-    possibleLengths: [14],
+    length: 14,
     cvcLength: 3
   },
   'Discover': {
     iconClass: 'pf-discover',
-    possibleLengths: [16],
+    length: 16,
     cvcLength: 3
   },
   'JCB': {
     iconClass: 'pf-jcb',
-    possibleLengths: [16],
+    length: 16,
     cvcLength: 3
   },
   'UnionPay': {
     iconClass: 'pf-credit-card',
-    possibleLengths: [16, 19],
+    length: 16,
     cvcLength: 3
   }
 });

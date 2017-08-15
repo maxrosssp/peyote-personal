@@ -13,8 +13,8 @@ Jimp.prototype.getBeadSpecs = function (templateBeadSize) {
 };
 
 function applyKernel (im, kernel, x, y) {
-  let value = [0, 0, 0];
-  let size = (kernel.length - 1) / 2;
+  var value = [0, 0, 0];
+  var size = (kernel.length - 1) / 2;
 
   for (var kx = 0; kx < kernel.length; kx += 1) {
       for (var ky = 0; ky < kernel[kx].length; ky += 1) {
@@ -77,7 +77,7 @@ Jimp.prototype.peyotePixelate = function(pixel_w, pixel_h, palette, cb) {
 
         var value = applyKernel(source, kernel, xx, yx);
 
-        var bestMatch = palette ? PeyotePalette.getClosestColor(value, palette) : value;
+        var bestMatch = palette ? PeyotePalette.getClosestColor(value, palette).color : value;
 
         this.bitmap.data[idx] = bestMatch[0];
         this.bitmap.data[idx + 1] = bestMatch[1];
