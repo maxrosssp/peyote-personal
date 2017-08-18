@@ -1,14 +1,19 @@
 var express = require('express');
-var stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+var stripe = require('stripe')(process.env.STRIPE_SECRET_KEY_TEST);
 var AWS = require('aws-sdk');
 var atob = require('atob');
 var Jimp = require('jimp');
 var TemplateBuilder = require('./peyote-processor/templateBuilder');
 
+AWS.config.update({region: 'us-east-1'});
+
 var s3 = new AWS.S3();
+var sqs = new AWS.SQS();
+
 var router = express.Router();
 
 var AWS_PEYOTE_ORDERS_BUCKET = 'peyote-personal-orders';
+var AWS_SQS_QUEUE_URL = 'https://sqs.us-east-1.amazonaws.com/590514978494/awseb-e-gx27axszp7-stack-AWSEBWorkerQueue-FJDU6C7D9HZC';
 
 var disableShipping = true;
 var templatePrice = 20;
@@ -83,50 +88,46 @@ router.post('/', function(req, res, next) {
     }
   });
 }, function(req, res, next) {
-  TemplateBuilder.build(uploadedImageBuffer, req.body.specs, 3)
-  .then(function(template) {
-    template.image.getBase64(Jimp.AUTO, function(err, encodedImage) {
-      if (err) {
-        console.log('7 bad');
-        throw new Error('Unable to encode image');
+  sqs.sendMessage({
+    QueueUrl: AWS_SQS_QUEUE_URL,
+    DelaySeconds: 0,
+    MessageAttributes: {
+      'imagePath': {
+        DataType: 'String',
+        StringValue: 'pending/' + templateSaveName
+      },
+      'colorCount': {
+        DataType: 'Number',
+        StringValue: req.body.specs.colorCount.toString()
+      },
+      'beadWidth': {
+        DataType: 'Number',
+        StringValue: req.body.specs.beadWidth.toString()
+      },
+      'beadHeight': {
+        DataType: 'Number',
+        StringValue: req.body.specs.beadHeight.toString()
+      },
+      'beadsPerColumnGroup': {
+        DataType: 'Number',
+        StringValue: '3'
+      },
+      'emailTo': {
+        DataType: 'String',
+        StringValue: req.body.specs.email
+      },
+      'orderId': {
+        DataType: 'String',
+        StringValue: orderId
       }
-
-      res.mailer.send('receiptEmail', {
-        to: req.body.specs.email,
-        subject: 'Your personalized peyote stitch template is ready!',
-        attachments: [{
-          fileName: 'Personalized_Template.' + template.image.getExtension(),
-          contents: new Buffer(encodedImage.replace(/^data:image\/\w+;base64,/, ''), 'base64')
-        }],
-        orderId: orderId,
-        colorMap: template.colorMap
-      }, function(err) {
-        if (err) {
-          console.log('8 bad');
-          console.log(err);
-        } else {
-          console.log('Email sent!');
-          next();
-        }
-      });
-    });
-  })
-  .catch(function(err) {
-    console.log('6 bad');
-    console.log(err);
-  });
-
-  res.json({message: 'Success!', path: '/success'});
-}, function(req, res, next) {
-  s3.deleteObject({
-    Bucket: AWS_PEYOTE_ORDERS_BUCKET,
-    Key: 'pending/' + templateSaveName
+    },
+    MessageBody: 'Personal Peyote Order: ' + orderId
   }, function(err, data) {
-    if (err) {
-      console.log('9 bad');
-      console.log(err);
-    }
+    if (err) console.log(err, err.stack);
+    else next();          
   });
+}, function(req, res, next) {
+  res.json({message: 'Success!', path: '/success'});
 });
 
 module.exports = router;
