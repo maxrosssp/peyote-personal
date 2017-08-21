@@ -279,6 +279,12 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "					<span class=\"text-danger\">{{ctrl.totalPrice | currency:'$':2}}</span>\n" +
     "				</strong>\n" +
     "			</h3>\n" +
+    "			<div class=\"form-group\">\n" +
+    "				<label for=\"couponCode\" class=\"col-md-3 control-label\">Coupon Code</label>\n" +
+    "				<div class=\"col-md-9\">\n" +
+    "					<input type=\"text\" id=\"couponCode\" class=\"form-control\" ng-model=\"ctrl.couponCode\">\n" +
+    "				</div>\n" +
+    "			</div>\n" +
     "		</div>\n" +
     "	</div>\n" +
     "\n" +
@@ -385,24 +391,24 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "				<div class=\"row\">\n" +
     "					<div class=\"form-group col-md-12\">\n" +
     "						<label for=\"email\">E-mail</label>\n" +
-    "						<input id=\"email\" \n" +
-    "							   name=\"email\" \n" +
-    "							   type=\"email\" \n" +
-    "							   placeholder=\"E-mail\" \n" +
-    "							   class=\"form-control\" \n" +
-    "							   ng-model=\"ctrl.email\" \n" +
+    "						<input id=\"email\"\n" +
+    "							   name=\"email\"\n" +
+    "							   type=\"email\"\n" +
+    "							   placeholder=\"E-mail\"\n" +
+    "							   class=\"form-control\"\n" +
+    "							   ng-model=\"ctrl.email\"\n" +
     "							   required>\n" +
     "					</div>\n" +
     "\n" +
     "					<div class=\"form-group col-md-12\" ng-class=\"{'has-error': ctrl.error.type === 'emailMatch'}\">\n" +
     "						<label for=\"email-confirm\">Confirm E-mail</label>\n" +
-    "						<input id=\"email-confirm\" \n" +
-    "							   name=\"emailConfirm\" \n" +
-    "							   type=\"email\" \n" +
-    "							   placeholder=\"Confirm E-mail\" \n" +
-    "							   class=\"form-control\" \n" +
-    "							   ng-model=\"ctrl.emailConfirm\" \n" +
-    "							   ng-change=\"ctrl.error = {};\" \n" +
+    "						<input id=\"email-confirm\"\n" +
+    "							   name=\"emailConfirm\"\n" +
+    "							   type=\"email\"\n" +
+    "							   placeholder=\"Confirm E-mail\"\n" +
+    "							   class=\"form-control\"\n" +
+    "							   ng-model=\"ctrl.emailConfirm\"\n" +
+    "							   ng-change=\"ctrl.error = {};\"\n" +
     "							   required>\n" +
     "						<span ng-if=\"ctrl.error.type === 'emailMatch'\" id=\"email-confirm-message\" class=\"help-block\">{{ctrl.error.message}}</span>\n" +
     "					</div>\n" +

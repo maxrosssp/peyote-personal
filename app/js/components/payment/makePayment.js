@@ -120,7 +120,7 @@ function MakePaymentCtrl($scope, $q, stripe, CARD_TYPES, FinalizeService, ngProg
       $scope.progressbar.set(50);
 
       finalSpecs.email = ctrl.email;
-      return FinalizeService.finalize(finalCroppedData, finalSpecs, token);
+      return FinalizeService.finalize(finalCroppedData, finalSpecs, token, ctrl.couponCode);
     })
     .catch(function(err) {
       if (err.type) {

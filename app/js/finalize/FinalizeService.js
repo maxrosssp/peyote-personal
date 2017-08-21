@@ -5,20 +5,21 @@ angular.module('app').factory('FinalizeService', [
 ]);
 
 function FinalizeService($http) {
-  var stripeCheckout = function(imageUrl, specs, token) {
+  var stripeCheckout = function(imageUrl, specs, token, couponCode) {
     return $http({
       method: 'POST',
       url: '/checkout',
       data: {
         url: imageUrl,
         specs: specs,
-        token: token
+        token: token,
+        couponCode: couponCode
       }
     });
   };
 
-  var finalize = function(imageUrl, specs, token) {
-    return stripeCheckout(imageUrl, specs, token)
+  var finalize = function(imageUrl, specs, token, couponCode) {
+    return stripeCheckout(imageUrl, specs, token, couponCode)
     .then(function(response) {
       console.log('Done with checkout');
       console.log(response);

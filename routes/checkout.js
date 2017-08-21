@@ -15,6 +15,8 @@ var router = express.Router();
 var AWS_PEYOTE_ORDERS_BUCKET = 'peyote-personal-orders';
 var AWS_SQS_QUEUE_URL = 'https://sqs.us-east-1.amazonaws.com/590514978494/awseb-e-gx27axszp7-stack-AWSEBWorkerQueue-FJDU6C7D9HZC';
 
+var FREE_COUPON_CODE = process.env.FREE_COUPON_CODE;
+
 var disableShipping = true;
 var templatePrice = 20;
 var pricePerSquareInch = 1.5;
@@ -73,6 +75,11 @@ router.post('/', function(req, res, next) {
     } else next();
   });
 }, function(req, res, next) {
+  if (req.body.couponCode && req.body.couponCode.toUpperCase() === FREE_COUPON_CODE) {
+    orderId = 'Free with coupon';
+    next();
+  }
+
   stripe.charges.create({
     amount: calculatePrice(req.body.specs),
     currency: 'usd',
@@ -124,7 +131,7 @@ router.post('/', function(req, res, next) {
     MessageBody: 'Personal Peyote Order: ' + orderId
   }, function(err, data) {
     if (err) console.log(err, err.stack);
-    else next();          
+    else next();
   });
 }, function(req, res, next) {
   res.json({message: 'Success!', path: '/success'});
